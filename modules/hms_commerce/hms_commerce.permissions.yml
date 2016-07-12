@@ -1,0 +1,4 @@
+administer hms_commerce settings:
+  title: 'Administer HMS Commerce settings'
+  description: 'Set the URL to the HMS API.'
+  restrict access: false

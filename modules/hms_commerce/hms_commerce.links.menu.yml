@@ -1,0 +1,5 @@
+hms_commerce.settings:
+  title: 'HMS Commerce'
+  description: 'Configure HMS Commerce settings.'
+  parent: system.admin_config_services
+  route_name: hms_commerce.settings
