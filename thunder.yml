@@ -37,14 +37,14 @@ projects:
       branch: "8.x-1.x"
 
   burdamagazine_lift:
-   type: "module"
-   download:
-     url: "https://github.com/BurdaMagazinOrg/module-burdamagazine_lift.git"
-     revision: "9c2f18321aebfc6e410c483996f7dca3d315115d"
-     branch: "8.x-1.x"
+    type: "module"
+    download:
+      url: "https://github.com/BurdaMagazinOrg/module-burdamagazine_lift.git"
+      revision: "9c2f18321aebfc6e410c483996f7dca3d315115d"
+      branch: "8.x-1.x"
 
   imagemagick:
-   type: "module"
+    type: "module"
     version: "1.0-alpha2"
 
   redirect:
