@@ -17,8 +17,13 @@
 function hms_commerce_node_view_alter(&$build, $entity, $display) {
   if ($entity->getType() == 'article') {
     $api_source = \Drupal::config('hms_commerce.settings')->get('api_source');
-    $build['#attached']['library'][] = 'hms_commerce/products';
-    $build['#attached']['drupalSettings']['hms_commerce']['api_source'] = $api_source;
+    if (!empty($api_source)) {
+      $build['#attached']['library'][] = 'hms_commerce/products';
+      $build['#attached']['drupalSettings']['hms_commerce']['api_source'] = $api_source;
+    }
+    else {
+      drupal_set_message(t("For products to display, the API source URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'warning');
+    }
   }
 }
 
