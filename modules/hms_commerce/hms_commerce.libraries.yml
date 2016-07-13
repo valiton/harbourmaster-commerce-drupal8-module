@@ -1,0 +1,8 @@
+products:
+  version: VERSION
+  js:
+#    digtap widgets loading dynamically
+    js/hms_commerce.products.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupalSettings
