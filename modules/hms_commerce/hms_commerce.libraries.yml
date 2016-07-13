@@ -1,7 +1,7 @@
 products:
   version: VERSION
   js:
-#    digtap widgets loading dynamically
+#    Not including digtap js here, as it loads dynamically depending on API url.
     js/hms_commerce.products.js: {}
   dependencies:
     - core/jquery

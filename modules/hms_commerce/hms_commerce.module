@@ -31,6 +31,9 @@ function hms_commerce_node_view_alter(&$build, $entity, $display) {
 function hms_commerce_library_info_alter(&$libraries, $extension) {
   if ($extension == 'hms_commerce') {
     $api_source = \Drupal::config('hms_commerce.settings')->get('api_source');
-    $libraries['products']['js'][$api_source . '/digtap/widgets.min.js'] = ['type' => 'external', 'minified' => TRUE];
+    if (!empty($api_source)) {
+      $libraries['products']['js'][$api_source . '/digtap/widgets.min.js'] = [
+        'type' => 'external', 'minified' => TRUE];
+    }
   }
 }

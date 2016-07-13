@@ -42,8 +42,9 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    if (!UrlHelper::isValid($form_state->getValue('api_source'), TRUE)) {
-      $form_state->setErrorByName('api_source', t("<em>@path</em> is not a valid URL.", ['@path' => $form_state->getValue('api_source')]));
+    $url = $form_state->getValue('api_source');
+    if (!empty($url) && !UrlHelper::isValid($url, TRUE)) {
+      $form_state->setErrorByName('api_source', $this->t("<em>@path</em> is not a valid URL.", ['@path' => $url]));
     }
   }
 
