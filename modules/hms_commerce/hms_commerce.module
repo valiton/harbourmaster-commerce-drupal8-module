@@ -21,7 +21,7 @@ function hms_commerce_node_view_alter(&$build, $entity, $display) {
       $build['#attached']['library'][] = 'hms_commerce/products';
       $build['#attached']['drupalSettings']['hms_commerce']['api_source'] = $api_source;
     }
-    else {
+    elseif (\Drupal::currentUser()->hasPermission('administer hms_commerce settings')) {
       drupal_set_message(t("For products to display, the API source URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'warning');
     }
   }
