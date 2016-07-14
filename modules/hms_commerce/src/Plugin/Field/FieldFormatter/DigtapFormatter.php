@@ -27,9 +27,9 @@ class DigtapFormatter extends FormatterBase {
     foreach ($items as $delta => $item) {
       $elements[$delta] = array(
         '#type' => 'markup',
-        '#markup' => "<div id='digtap-widget-" . $item->value . "'></div>",
+        '#markup' => "<div id='digtap-widget-" . $delta . "'></div>",
       );
-      $product_ids[] = $item->value;
+      $product_ids[$delta] = $item->value;
     }
 
     // Attach JS and its settings to any page displaying this field.

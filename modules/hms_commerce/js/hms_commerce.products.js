@@ -21,7 +21,7 @@
       $.each(productIds, function(index, value) {
         window._digtapq.push(['render', {
           widget: 'PremiumDownload',
-          selector: '#digtap-widget-' + value,
+          selector: '#digtap-widget-' + index,
           options: {
             product_id: Number(value)
           }
