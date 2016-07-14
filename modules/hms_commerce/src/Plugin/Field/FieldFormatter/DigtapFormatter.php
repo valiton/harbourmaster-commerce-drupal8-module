@@ -36,8 +36,10 @@ class DigtapFormatter extends FormatterBase {
     $api_source = \Drupal::config('hms_commerce.settings')->get('api_source');
     if (!empty($api_source)) {
       $elements['#attached']['library'][] = 'hms_commerce/products';
-      $elements['#attached']['drupalSettings']['hms_commerce']['api_source'] = $api_source;
-      $elements['#attached']['drupalSettings']['hms_commerce']['product_ids'] = $product_ids;
+      $elements['#attached']['drupalSettings']['hms_commerce'] = [
+        'api_source' => $api_source,
+        'product_ids' => $product_ids,
+      ];
     }
 
     // Warn administrative user if the API URL is not set.

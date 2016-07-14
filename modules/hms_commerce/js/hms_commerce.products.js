@@ -23,7 +23,7 @@
           widget: 'PremiumDownload',
           selector: '#digtap-widget-' + value,
           options: {
-            product_id: value
+            product_id: Number(value)
           }
         }]);
       });
