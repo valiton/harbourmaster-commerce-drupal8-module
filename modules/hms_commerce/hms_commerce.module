@@ -6,32 +6,12 @@
  */
 
 /**
- * Implements hook_ENTITY_TYPE_view_alter.
- *
- * @param $build
- * @param $entity
- * @param $display
- *
- * @todo: attach to any entity having a field instead to node type
- */
-function hms_commerce_node_view_alter(&$build, $entity, $display) {
-  if ($entity->getType() == 'article') {
-    $api_source = \Drupal::config('hms_commerce.settings')->get('api_source');
-    if (!empty($api_source)) {
-      $build['#attached']['library'][] = 'hms_commerce/products';
-      $build['#attached']['drupalSettings']['hms_commerce']['api_source'] = $api_source;
-    }
-    elseif (\Drupal::currentUser()->hasPermission('administer hms_commerce settings')) {
-      drupal_set_message(t("For products to display, the API source URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'warning');
-    }
-  }
-}
-
-/**
  * Implements hook_library_info_alter.
  *
  * @param $libraries
  * @param $extension
+ *
+ * Adds a JS library with dynamic source according to module settings.
  */
 function hms_commerce_library_info_alter(&$libraries, $extension) {
   if ($extension == 'hms_commerce') {
