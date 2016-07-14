@@ -8,14 +8,14 @@ use Drupal\Core\Form\FormStateInterface;
 
 /**
  * @FieldWidget(
- *   id = "digtap_widget",
- *   label = @Translation("Digtap widget"),
+ *   id = "digtap_product",
+ *   label = @Translation("Digtap product"),
  *   field_types = {
  *     "integer"
  *   }
  * )
  */
-class DigtapWidget extends WidgetBase {
+class DigtapProductWidget extends WidgetBase {
 
   /**
    * {@inheritdoc}

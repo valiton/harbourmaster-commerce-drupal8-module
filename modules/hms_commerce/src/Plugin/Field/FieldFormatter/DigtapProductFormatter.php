@@ -7,14 +7,16 @@ use Drupal\Core\Field\FormatterBase;
 
 /**
  * @FieldFormatter(
- *   id = "digtap_formatter",
- *   label = @Translation("Digtap widget"),
+ *   id = "digtap_product",
+ *   label = @Translation("Digtap product"),
  *   field_types = {
  *     "integer"
  *   }
  * )
  */
-class DigtapFormatter extends FormatterBase {
+class DigtapProductFormatter extends FormatterBase {
+
+  const WIDGET_TYPE = 'PremiumDownload';
 
   /**
    * {@inheritdoc}
@@ -38,6 +40,7 @@ class DigtapFormatter extends FormatterBase {
       $elements['#attached']['library'][] = 'hms_commerce/products';
       $elements['#attached']['drupalSettings']['hms_commerce'] = [
         'api_source' => $api_source,
+        'widget_type' => self::WIDGET_TYPE,
         'product_ids' => $product_ids,
       ];
     }
