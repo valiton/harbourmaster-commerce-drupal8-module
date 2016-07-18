@@ -29,8 +29,11 @@ class PremiumContentWidget extends WidgetBase {
         '#empty_value' => '',
         '#default_value' => $default_value,
         '#description' => t('Price category'),
-        '#prefix' => $this->renderPremiumCheckbox(!empty($default_value)), //todo: remove prefix from field edit form
+        '#prefix' => $this->renderPremiumCheckbox(!is_null($default_value)), //todo: remove prefix from field edit form
       ];
+    // Attach behaviour to display/hide the select field dynamically.
+    $form['#attached']['library'][] = 'hms_commerce/premiumContentWidget';
+
     return $element;
   }
 
@@ -38,7 +41,7 @@ class PremiumContentWidget extends WidgetBase {
     $checkbox = [
       '#type' => 'checkbox',
       '#title' => $this->t('Premium content'),
-      '#default_value' => $checked,
+      '#checked' => $checked ? 'checked' : '',
     ];
     return render($checkbox);
   }
