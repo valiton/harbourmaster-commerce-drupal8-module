@@ -18,9 +18,10 @@
 
       // Place widgets into product divs created by Drupal.
       var productIds = settings.hms_commerce.product_ids;
+      var widgetType = settings.hms_commerce.widget_type;
       $.each(productIds, function(index, value) {
         window._digtapq.push(['render', {
-          widget: 'PremiumDownload',
+          widget: widgetType,
           selector: '#digtap-widget-' + index,
           options: {
             product_id: Number(value)
