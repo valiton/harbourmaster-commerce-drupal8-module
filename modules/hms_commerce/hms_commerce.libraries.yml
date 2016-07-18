@@ -6,3 +6,10 @@ products:
   dependencies:
     - core/jquery
     - core/drupalSettings
+
+premiumContentWidget:
+  version: VERSION
+  js:
+    js/hms_commerce.premiumContentWidget.js: {}
+  dependencies:
+    - core/jquery

@@ -19,7 +19,6 @@
       function toggleListVisibility() {
         var selectList = '.field--widget-premium-content .form-type-select';
         if ($(checkbox).is(":checked")) {
-          // show submit
           $(selectList).show();
         } else {
           $(selectList + ' .form-select').val('');
