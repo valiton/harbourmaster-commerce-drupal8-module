@@ -57,7 +57,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    \Drupal::service('hms_commerce.settings')->setApiUrl($form_state->getValue('api_source'));
+    \Drupal::service('hms_commerce.settings')->setBaseApiUrl($form_state->getValue('api_source'));
     parent::submitForm($form, $form_state);
   }
 }

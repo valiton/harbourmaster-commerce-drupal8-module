@@ -26,13 +26,28 @@ class Digtap {
     $this->config = $config_factory->get('hms_commerce.settings');
   }
 
-  public function setApiUrl($url) {
+  /**
+   * Sets the API base url setting.
+   *
+   * @param string $url
+   *  Absolute url string without trailing slash.
+   */
+  public function setBaseApiUrl($url) {
     $this->configFactory->getEditable('hms_commerce.settings')
       ->set('api_source', $url)->save();
     // Refresh config object after making changes.
     $this->config = $this->configFactory->get('hms_commerce.settings');
   }
 
+  /**
+   * Gets the API base url setting.
+   *
+   * @param bool $display_error
+   *  Absolute url string without trailing slash.
+   *
+   * @return string
+   *  Returns the URL string or an empty string.
+   */
   public function getBaseApiUrl($display_error = FALSE) {
     $api_url = $this->config->get('api_source');
     if (!empty($api_url)) {
@@ -46,10 +61,18 @@ class Digtap {
     return '';
   }
 
-  public function getApiUrl($type) {
+  /**
+   * Gets the url for a certain resource from the base API.
+   *
+   * @param string $resource
+   *
+   * @return string
+   *  Returns the resource URL string or an empty string.
+   */
+  public function getApiUrl($resource) {
     $base_url = $this->getBaseApiUrl(TRUE);
     if (!empty($base_url)) {
-      switch($type) {
+      switch($resource) {
         case 'price_category':
           return $base_url . self::PRICE_CATEGORY_API_PATH;
         case 'digtap_widgets':
@@ -74,7 +97,8 @@ class Digtap {
   public static function registerError($message, $substitutions = [], $display = NULL) {
     $message = strtr(t($message), $substitutions);
     \Drupal::logger('hms_commerce')->notice($message);
-    if (!empty($display) && \Drupal::currentUser()->hasPermission('administer hms_commerce settings')) {
+    if (!empty($display)
+      && \Drupal::currentUser()->hasPermission('administer hms_commerce settings')) {
       drupal_set_message($message, $display);
     }
   }

@@ -22,7 +22,7 @@
       $.each(productIds, function(index, value) {
         window._digtapq.push(['render', {
           widget: widgetType,
-          selector: '#digtap-widget-' + index,
+          selector: '#digtap-widget-' + widgetType + '-' + index,
           options: {
             product_id: Number(value)
           }
