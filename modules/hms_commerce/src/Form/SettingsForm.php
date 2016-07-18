@@ -28,11 +28,11 @@ class SettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state) {;
     $form['api_source'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Commerce API URL'),
-      '#default_value' => $this->config('hms_commerce.settings')->get('api_source'),
+      '#default_value' => \Drupal::service('hms_commerce.settings')->getBaseApiUrl(),
       '#description' => $this->t('Absolute URL to the commerce API without trailing slash.'),
     );
     return parent::buildForm($form, $form_state);
@@ -57,8 +57,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $config = \Drupal::service('config.factory')->getEditable('hms_commerce.settings');
-    $config->set('api_source', $form_state->getValue('api_source'))->save();
+    \Drupal::service('hms_commerce.settings')->setApiUrl($form_state->getValue('api_source'));
     parent::submitForm($form, $form_state);
   }
 }

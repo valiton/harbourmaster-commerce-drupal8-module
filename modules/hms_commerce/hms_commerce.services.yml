@@ -1,0 +1,4 @@
+services:
+  hms_commerce.settings:
+    class: Drupal\hms_commerce\Digtap
+    arguments: ['@config.factory']

@@ -29,13 +29,14 @@ class DigtapProductFormatter extends FormatterBase {
     foreach ($items as $delta => $item) {
       $elements[$delta] = array(
         '#type' => 'markup',
-        '#markup' => "<div id='digtap-widget-" . $delta . "'></div>",
+        '#markup' => "<div id='digtap-widget-" . self::WIDGET_TYPE
+          . '-' . $delta . "'></div>",
       );
       $product_ids[$delta] = $item->value;
     }
 
     // Attach JS and its settings to any page displaying this field.
-    $api_source = \Drupal::config('hms_commerce.settings')->get('api_source');
+    $api_source = \Drupal::service('hms_commerce.settings')->getApiUrl(TRUE);
     if (!empty($api_source)) {
       $elements['#attached']['library'][] = 'hms_commerce/products';
       $elements['#attached']['drupalSettings']['hms_commerce'] = [
@@ -43,12 +44,6 @@ class DigtapProductFormatter extends FormatterBase {
         'widget_type' => self::WIDGET_TYPE,
         'product_ids' => $product_ids,
       ];
-    }
-
-    // Warn administrative user if the API URL is not set.
-    elseif (\Drupal::currentUser()->hasPermission('administer hms_commerce settings')) {
-      drupal_set_message(t("For products to display, the API source URL needs to be set <a href='@url'>here</a>.", [
-        '@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'warning');
     }
     return $elements;
   }
