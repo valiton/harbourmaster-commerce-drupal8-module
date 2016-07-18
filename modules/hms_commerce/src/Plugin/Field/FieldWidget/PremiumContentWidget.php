@@ -25,11 +25,11 @@ class PremiumContentWidget extends WidgetBase {
     $default_value = (isset($items[$delta]->value)) ? $items[$delta]->value : NULL;
     $element['value'] = $element + [
         '#type' => 'select',
-        '#options' => [0 => 'test', 1 => 'test2'], //todo: API call must be implemented first
+        '#options' => $this->getPriceCategories(),
         '#empty_value' => '',
         '#default_value' => $default_value,
         '#description' => t('Price category'),
-        '#prefix' => $this->renderPremiumCheckbox(!is_null($default_value)), //todo: remove prefix from field edit form
+        '#prefix' => $this->renderPremiumCheckbox(!is_null($default_value)),
       ];
     // Attach behaviour to display/hide the select field dynamically.
     $form['#attached']['library'][] = 'hms_commerce/premiumContentWidget';
@@ -44,5 +44,30 @@ class PremiumContentWidget extends WidgetBase {
       '#checked' => $checked ? 'checked' : '',
     ];
     return render($checkbox);
+  }
+
+  /**
+   * @return array
+   *  Array with category IDs as indexes and prices as values.
+   *
+   * @todo Either use curl or implement hook_requirements to check for allow_url_fopen.
+   * @todo Adjust method to API which is to change.
+   */
+  private function getPriceCategories() {
+    $categories = [];
+    $settings = \Drupal::service('hms_commerce.settings');
+    $url = $settings->getApiUrl('price_category');
+    if (!empty($url)) {
+      $response = json_decode(file_get_contents($url));
+      if (isset($response->products)) {
+        foreach($response->products as $category) {
+          $categories[$category->product_id] = $category->product;
+        }
+      }
+      else {
+        $settings::registerError('There has been a problem connecting to the API: Either the service is down, or an incorrect URL is set in the module settings.', [], 'error');
+      }
+    }
+    return $categories;
   }
 }

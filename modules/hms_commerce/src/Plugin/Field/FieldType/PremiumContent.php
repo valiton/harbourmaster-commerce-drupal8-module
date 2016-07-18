@@ -18,8 +18,6 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
  */
 class PremiumContent extends FieldItemBase {
 
-//  const CATEGORY_ID_MAX_LENGTH = 20;
-
   /**
    * {@inheritdoc}
    */
@@ -54,23 +52,4 @@ class PremiumContent extends FieldItemBase {
     $value = $this->get('value')->getValue();
     return $value === NULL || $value === '';
   }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @todo: Add integer constraint, in case category IDS coming from the cloud are erroneous.
-   */
-//  public function getConstraints() {
-//    $constraint_manager = \Drupal::typedDataManager()->getValidationConstraintManager();
-//    $constraints = parent::getConstraints();
-//    $constraints[] = $constraint_manager->create('ComplexData', array(
-//      'value' => array(
-//        'Length' => array(
-//          'max' => self::CATEGORY_ID_MAX_LENGTH,
-//          'maxMessage' => t('%name: The price category ID may not be longer than @max characters.', array('%name' => $this->getFieldDefinition()->getLabel(), '@max' => self::CATEGORY_ID_MAX_LENGTH)),
-//        )
-//      ),
-//    ));
-//    return $constraints;
-//  }
 }
