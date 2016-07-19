@@ -10,7 +10,7 @@ use Drupal\Core\Field\FormatterBase;
  *   id = "digtap_product",
  *   label = @Translation("Digtap product"),
  *   field_types = {
- *     "integer"
+ *     "digtap_product"
  *   }
  * )
  */
