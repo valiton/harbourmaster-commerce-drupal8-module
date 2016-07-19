@@ -6,24 +6,6 @@
  */
 
 /**
- * Implements hook_library_info_alter.
- *
- * @param $libraries
- * @param $extension
- *
- * Adds a JS library with dynamic source according to module settings.
- */
-function hms_commerce_library_info_alter(&$libraries, $extension) {
-  if ($extension == 'hms_commerce') {
-    $widget_url = \Drupal::service('hms_commerce.settings')->getApiUrl('digtap_widgets');
-    if (!empty($widget_url)) {
-      $libraries['products']['js'][$widget_url] = [
-        'type' => 'external', 'minified' => TRUE];
-    }
-  }
-}
-
-/**
  * Implements hook_library_info_build.
  *
  * Adds a JS library with dynamic source according to module settings.
