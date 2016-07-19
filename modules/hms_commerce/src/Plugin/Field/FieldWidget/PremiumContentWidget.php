@@ -28,7 +28,7 @@ class PremiumContentWidget extends WidgetBase {
         '#options' => $this->getPriceCategories(),
         '#empty_value' => '',
         '#default_value' => $default_value,
-        '#description' => t('Price category'),
+        '#description' => $this->t('Price category'),
         '#prefix' => $this->renderPremiumCheckbox(!is_null($default_value)),
       ];
     // Attach behaviour to display/hide the select field dynamically.
@@ -65,7 +65,7 @@ class PremiumContentWidget extends WidgetBase {
         }
       }
       else {
-        $settings::registerError('There has been a problem connecting to the API: Either the service is down, or an incorrect URL is set in the module settings.', [], 'error');
+        $settings::registerError('There was a problem connecting to the API: Either the service is down, or an incorrect URL is set in the module settings.', [], 'error');
       }
     }
     return $categories;

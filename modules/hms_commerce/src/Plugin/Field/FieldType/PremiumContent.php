@@ -22,7 +22,7 @@ class PremiumContent extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
-    $properties['value'] = DataDefinition::create('string')
+    $properties['value'] = DataDefinition::create('integer')
       ->setLabel(t('Price category ID'));
     return $properties;
   }

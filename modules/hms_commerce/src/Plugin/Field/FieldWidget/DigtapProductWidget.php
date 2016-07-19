@@ -11,7 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   id = "digtap_product",
  *   label = @Translation("Digtap product"),
  *   field_types = {
- *     "integer"
+ *     "digtap_product"
  *   }
  * )
  */
@@ -25,7 +25,7 @@ class DigtapProductWidget extends WidgetBase {
         '#type' => 'textfield',
         '#title' => $this->t('Select product'),
         '#default_value' => (isset($items[$delta]->value)) ? $items[$delta]->value : '',
-        '#description' => t(''),
+        '#description' => $this->t(''),
         '#attributes' => ['class' => ['digtap-product-widget']]
       ];
     // Attach behaviour to field dynamically.
