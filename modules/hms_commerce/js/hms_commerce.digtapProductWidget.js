@@ -17,7 +17,7 @@
       //}]);
 
       $(".digtap-product-widget").click(function() {
-        //alert(this.id);
+        alert(this.id);
       });
     }
   };

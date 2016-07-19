@@ -28,7 +28,6 @@ class DigtapProductWidget extends WidgetBase {
         '#description' => $this->t(''),
         '#attributes' => ['class' => ['digtap-product-widget']]
       ];
-    // Attach behaviour to field dynamically.
     // Attach JS and its settings to any page displaying this field.
     $api_source = \Drupal::service('hms_commerce.settings')->getApiUrl(TRUE);
     if (!empty($api_source)) {
