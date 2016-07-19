@@ -13,3 +13,10 @@ premiumContentWidget:
     js/hms_commerce.premiumContentWidget.js: {}
   dependencies:
     - core/jquery
+
+digtapProductWidget:
+  version: VERSION
+  js:
+    js/hms_commerce.digtapProductWidget.js: {}
+  dependencies:
+    - core/jquery
