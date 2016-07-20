@@ -6,7 +6,7 @@ use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 
 /**
- * Plugin implementation of the 'country' field type.
+ * Plugin implementation of the 'premium_content' field type.
  *
  * @FieldType(
  *   id = "premium_content",
@@ -14,7 +14,10 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
  *   description = @Translation("Stores the price category of a premium content piece."),
  *   category = @Translation("Thunder"),
  *   default_widget = "premium_content",
+ *   default_formatter = "list_default"
  * )
+ *
+ * @todo: Add new formatter and change default_formatter value.
  */
 class PremiumContent extends FieldItemBase {
 
