@@ -56,7 +56,7 @@ class Digtap {
     // Warn administrative user if the API URL is not set.
     elseif ($display_error) {
       $message = "For products to display, the API source URL needs to be set <a href='@url'>here</a>.";
-      self::registerError($message, ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"], 'status');
+      self::registerError($message, ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"], 'warning');
     }
     return '';
   }
@@ -95,7 +95,7 @@ class Digtap {
    *  privileged user accordingly.
    */
   public static function registerError($message, $substitutions = [], $display = NULL) {
-    $message = strtr(t($message), $substitutions);
+    $message = t($message, $substitutions);
     \Drupal::logger('hms_commerce')->notice($message);
     if (!empty($display)
       && \Drupal::currentUser()->hasPermission('administer hms_commerce settings')) {
