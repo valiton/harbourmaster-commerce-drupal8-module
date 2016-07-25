@@ -19,31 +19,30 @@ class PremiumContentWidget extends WidgetBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Decide what to do if price categories were removed from the cloud.
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-
     $default_value = (isset($items[$delta]->value)) ? $items[$delta]->value : NULL;
-    $element['value'] = $element + [
+
+    $element['premium'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Premium content'),
+      '#default_value' => !is_null($default_value),
+    ];
+
+    $element['value'] = [
         '#type' => 'select',
         '#options' => $this->getPriceCategories(),
         '#empty_value' => '',
         '#default_value' => $default_value,
-        '#description' => $this->t('Price category'),
-        '#prefix' => $this->renderPremiumCheckbox(!is_null($default_value)),
+//        '#description' => $this->t('Price category'),
+        '#title' => $this->t('Price category'),
       ];
     // Attach behaviour to display/hide the select field dynamically.
     $form['#attached']['library'][] = 'hms_commerce/premiumContentWidget';
 
     return $element;
-  }
-
-  private function renderPremiumCheckbox($checked) {
-    $checkbox = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Premium content'),
-      '#checked' => $checked ? 'checked' : '',
-    ];
-    return render($checkbox);
   }
 
   /**

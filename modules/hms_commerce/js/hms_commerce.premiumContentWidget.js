@@ -11,7 +11,6 @@
       var checkbox = '.field--widget-premium-content .form-checkbox';
       toggleListVisibility();
 
-      // On checkbox change, hide and show submit button
       $(checkbox).change(function () {
         toggleListVisibility();
       });
