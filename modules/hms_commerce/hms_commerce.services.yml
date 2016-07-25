@@ -2,3 +2,6 @@ services:
   hms_commerce.settings:
     class: Drupal\hms_commerce\Digtap
     arguments: ['@config.factory']
+
+  hms_commerce.cryptor:
+    class: Drupal\hms_commerce\Cryptor
