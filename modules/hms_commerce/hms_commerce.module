@@ -68,23 +68,18 @@ function hms_commerce_entity_view_alter(array &$build, Drupal\Core\Entity\Entity
   foreach ($entity_fields as $field) {
     if ($field->getFieldDefinition()->getType() == 'premium_content') {
       if (!empty($field->getValue())) {
+
+        // Encrypt premium fields
         $premium_fields = array_filter($field->getSetting('premium_fields'), function($i) {return !empty($i);});
         $cryptor = \Drupal::service('hms_commerce.cryptor');
-        // Attach JS
         $build['#attached']['library'][] = 'hms_commerce/premiumContent';
         $entity_id = $entity->id();
         $entity_type = $entity->getEntityTypeId();
-//        $elements['#attached']['drupalSettings']['hms_commerce'] = [
-//          'api_source' => $api_source,
-//          'widget_type' => self::WIDGET_TYPE,
-//          'product_ids' => $product_ids,
-//        ];
         foreach($premium_fields as $premium_field_name) {
           if (isset($build[$premium_field_name])) {
             $rendered_field = render($build[$premium_field_name]);
             if (!empty($rendered_field)) {
               $encrypted_field = [
-//                '#markup' => "<div hms-access='NOT( hasAbo OR " . $entity_type . "Id" . $entity_id. " )' hms-external-id='" //todo
                 '#markup' => "<div hms-access='hasAbo OR " . $entity_type . "Id" . $entity_id. "' hms-external-id='" //todo
                   . $entity_type . "-" . $entity_id . "'>"
                   . $cryptor->encodeContent($entity_id, $rendered_field)
@@ -94,6 +89,10 @@ function hms_commerce_entity_view_alter(array &$build, Drupal\Core\Entity\Entity
               $build[$premium_field_name] = $encrypted_field;
             }
           }
+        }
+        // Alter designated teaser field
+        if (isset($build[$field->getSetting('teaser_field')])) {
+          //todo
         }
       }
       break;
