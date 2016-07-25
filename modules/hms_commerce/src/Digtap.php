@@ -14,6 +14,7 @@ class Digtap {
 
   const PRICE_CATEGORY_API_PATH = '/home/de/api/v1/products';
   const DIGTAP_WIDGET_JS_PATH = '/digtap/widgets.min.js';
+  const PREMIUM_CONTENT_JS_PATH = 'https://digtap-staging-prototype.sso-service.de/assets/js/premium-content.min.js';
 
   /**
    * Digtap constructor.
@@ -77,6 +78,8 @@ class Digtap {
           return $base_url . self::PRICE_CATEGORY_API_PATH;
         case 'digtap_widgets':
           return $base_url . self::DIGTAP_WIDGET_JS_PATH;
+        case 'premium_content':
+          return self::PREMIUM_CONTENT_JS_PATH; //todo
       }
     }
     return '';

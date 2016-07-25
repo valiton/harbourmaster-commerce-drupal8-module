@@ -12,9 +12,19 @@
  */
 function hms_commerce_library_info_build() {
   $libraries = [];
-  $widget_url = \Drupal::service('hms_commerce.settings')->getApiUrl('digtap_widgets');
-  if (!empty($widget_url)) {
-    $libraries['products']['js'][$widget_url] = [
+  $settings = \Drupal::service('hms_commerce.settings');
+
+  // Add digtap widget js.
+  $widget_js = $settings->getApiUrl('digtap_widgets');
+  if (!empty($widget_js)) {
+    $libraries['products']['js'][$widget_js] = [
+      'type' => 'external', 'minified' => TRUE];
+  }
+
+  // Add premium content js.
+  $premium_content_js = $settings->getApiUrl('premium_content');
+  if (!empty($premium_content_js)) {
+    $libraries['premiumContent']['js'][$premium_content_js] = [
       'type' => 'external', 'minified' => TRUE];
   }
   return $libraries;

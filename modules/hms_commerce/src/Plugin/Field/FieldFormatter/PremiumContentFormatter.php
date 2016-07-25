@@ -5,7 +5,6 @@ namespace Drupal\hms_commerce\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldFilteredMarkup;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Form\OptGroup;
 
 /**
  * @FieldFormatter(

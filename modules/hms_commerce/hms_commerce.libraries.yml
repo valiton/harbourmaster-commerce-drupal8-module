@@ -1,7 +1,7 @@
+# Several JS sources are not included as they attach dynamically through hook_library_info_build.
 products:
   version: VERSION
   js:
-#    Not including digtap js here, as it loads dynamically depending on API url.
     js/hms_commerce.products.js: {}
   dependencies:
     - core/jquery
