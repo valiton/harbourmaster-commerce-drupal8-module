@@ -5,6 +5,7 @@ namespace Drupal\hms_commerce\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\hms_commerce\PremiumContentManager;
 
 /**
  * @FieldWidget(
@@ -30,41 +31,20 @@ class PremiumContentWidget extends WidgetBase {
     ];
 
     $element['value'] = [
-        '#type' => 'select',
-        '#options' => $this->getPriceCategories(),
-        '#empty_value' => '',
-        '#default_value' => $default_value,
-//        '#description' => $this->t('Price category'),
-        '#title' => $this->t('Price category'),
+      '#type' => 'select',
+
+      // Make sure the dropdown shows option '- Current -' when there is no connection to Bestseller API
+      // or if the category ID vanished from it. This is to make sure that the value is kept after clicking 'Save'.
+      '#options' => [$default_value => $this->t('- Current -')] + PremiumContentManager::getPriceCategories(),
+
+      '#empty_value' => '',
+      '#default_value' => $default_value,
+      '#title' => $this->t('Price category'),
       ];
+
     // Attach behaviour to display/hide the select field dynamically.
     $form['#attached']['library'][] = 'hms_commerce/premiumContentWidget';
 
     return $element;
-  }
-
-  /**
-   * @return array
-   *  Array with category IDs as indexes and prices as values.
-   *
-   * @todo Either use curl or implement hook_requirements to check for allow_url_fopen.
-   * @todo Adjust method to API which is to change.
-   */
-  private function getPriceCategories() {
-    $categories = [];
-    $settings = \Drupal::service('hms_commerce.settings');
-    $url = $settings->getApiUrl('price_category');
-    if (!empty($url)) {
-      $response = json_decode(file_get_contents($url));
-      if (isset($response->products)) {
-        foreach($response->products as $category) {
-          $categories[$category->product_id] = $category->product;
-        }
-      }
-      else {
-        $settings::registerError('There was a problem connecting to the API: Either the service is down, or an incorrect URL is set in the module settings.', [], 'error');
-      }
-    }
-    return $categories;
   }
 }

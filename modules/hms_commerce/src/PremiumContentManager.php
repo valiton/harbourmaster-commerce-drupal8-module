@@ -68,4 +68,29 @@ class PremiumContentManager {
   public function getPremiumFields() {
     return $this->premiumFields;
   }
+
+  /**
+   * @return array
+   *  Array with category IDs as indexes and prices as values.
+   *
+   * @todo Either use curl or implement hook_requirements to check for allow_url_fopen.
+   * @todo Adjust method to API which is to change.
+   */
+  public static function getPriceCategories() {
+    $categories = [];
+    $settings = \Drupal::service('hms_commerce.settings');
+    $url = $settings->getResourceUrl('price_category');
+    if (!empty($url)) {
+      $response = json_decode(file_get_contents($url));
+      if (isset($response->products)) {
+        foreach($response->products as $category) {
+          $categories[$category->product_id] = $category->product;
+        }
+      }
+      else {
+        $settings::registerError('There was a problem connecting to the API: Either the service is down, or an incorrect URL is set in the module settings.', [], 'error');
+      }
+    }
+    return $categories;
+  }
 }
