@@ -5,6 +5,8 @@
  * Module file containing HMS Commerce hooks.
  */
 
+use Drupal\hms_commerce\PremiumContentManager;
+
 /**
  * Implements hook_library_info_build.
  *
@@ -36,38 +38,8 @@ function hms_commerce_library_info_build() {
  * Encrypt all premium fields on entity view.
  */
 function hms_commerce_entity_view_alter(array &$build, Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display) {
-  $entity_fields = $entity->getFields();
-  foreach ($entity_fields as $field) {
-    if ($field->getFieldDefinition()->getType() == 'premium_content') {
-      if (!empty($field->getValue())) {
 
-        // Encrypt premium fields
-        $premium_fields = array_filter($field->getSetting('premium_fields'), function($i) {return !empty($i);});
-        $cryptor = \Drupal::service('hms_commerce.cryptor');
-        $build['#attached']['library'][] = 'hms_commerce/premiumContent';
-        $entity_id = $entity->id();
-        $entity_type = $entity->getEntityTypeId();
-        foreach($premium_fields as $premium_field_name) {
-          if (isset($build[$premium_field_name])) {
-            $rendered_field = render($build[$premium_field_name]);
-            if (!empty($rendered_field)) {
-              $encrypted_field = [
-                '#markup' => "<div hms-access='hasAbo OR " . $entity_type . "Id" . $entity_id. "' hms-external-id='" //todo
-                  . $entity_type . "-" . $entity_id . "'>"
-                  . $cryptor->encodeContent($entity_id, $rendered_field)
-                  . "</div>",
-                '#weight' => $build[$premium_field_name]['#weight'],
-              ];
-              $build[$premium_field_name] = $encrypted_field;
-            }
-          }
-        }
-        // Alter designated teaser field
-        if (isset($build[$field->getSetting('teaser_field')])) {
-          //todo
-        }
-      }
-      break;
-    }
-  }
+  $manager = new PremiumContentManager($entity);
+  $manager->encryptPremiumFields($build, \Drupal::service('hms_commerce.cryptor'));
+  $manager->showTeaser($build);
 }
