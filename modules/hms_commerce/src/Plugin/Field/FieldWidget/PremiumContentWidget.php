@@ -19,8 +19,6 @@ class PremiumContentWidget extends WidgetBase {
 
   /**
    * {@inheritdoc}
-   *
-   * @todo Decide what to do if price categories were removed from the cloud.
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $default_value = (isset($items[$delta]->value)) ? $items[$delta]->value : NULL;

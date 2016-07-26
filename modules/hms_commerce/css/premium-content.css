@@ -1,0 +1,5 @@
+[hms-access], [hms-external-id] { display: none; }
+[hms-access][hms-access-hide] { display: none; }
+[hms-access][hms-access-granted]:not([hms-external-id]) { display: inherit; }
+:not([hms-access])[hms-external-id][hms-access-decoded] { display: inherit; }
+[hms-access][hms-access-granted][hms-access-decoded] { display: inherit; }

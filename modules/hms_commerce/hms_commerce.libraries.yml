@@ -1,4 +1,4 @@
-# Several JS sources are not included as they attach dynamically through hook_library_info_build.
+# Several resources are not included as they attach dynamically through hook_library_info_build.
 products:
   version: VERSION
   js:
@@ -6,6 +6,12 @@ products:
   dependencies:
     - core/jquery
     - core/drupalSettings
+
+premiumContent:
+  version: VERSION
+  css:
+    theme:
+      css/premium-content.css: {}
 
 premiumContentWidget:
   version: VERSION
