@@ -3,3 +3,5 @@ description: 'Marries Thunder with Harbourmaster commerce functionality.'
 type: module
 core: 8.x
 package: Custom
+dependencies:
+  - hms:hms
