@@ -29,11 +29,11 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {;
-    $form['api_source'] = array(
+    $form['bestseller_url'] = array(
       '#type' => 'textfield',
-      '#title' => $this->t('Commerce API URL'),
-      '#default_value' => \Drupal::service('hms_commerce.settings')->getBaseApiUrl(),
-      '#description' => $this->t('Absolute URL to the commerce API without trailing slash.'),
+      '#title' => $this->t('Bestseller API URL'),
+      '#default_value' => \Drupal::service('hms_commerce.settings')->getBestsellerApiUrl(),
+      '#description' => $this->t('Absolute URL to the Bestseller API without trailing slash.'),
     );
     return parent::buildForm($form, $form_state);
   }
@@ -42,14 +42,14 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $url = $form_state->getValue('api_source');
+    $url = $form_state->getValue('bestseller_url');
     if (!empty($url) && !UrlHelper::isValid($url, TRUE)) { // Check if URL looks valid.
       $form_state->setErrorByName(
-        'api_source', $this->t("<em>@path</em> is not a valid URL.", ['@path' => $url]));
+        'bestseller_url', $this->t("<em>@path</em> is not a valid URL.", ['@path' => $url]));
     }
     elseif (substr($url, -1) == '/') { // Disallow trailing slash.
       $form_state->setErrorByName(
-        'api_source', $this->t("The URL may not contain a trailing slash.", ['@path' => $url]));
+        'bestseller_url', $this->t("The URL may not contain a trailing slash.", ['@path' => $url]));
     }
   }
 
@@ -57,7 +57,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    \Drupal::service('hms_commerce.settings')->setBaseApiUrl($form_state->getValue('api_source'));
+    \Drupal::service('hms_commerce.settings')->setBestsellerApiUrl($form_state->getValue('bestseller_url'));
     parent::submitForm($form, $form_state);
   }
 }

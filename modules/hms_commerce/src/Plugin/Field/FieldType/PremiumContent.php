@@ -17,8 +17,6 @@ use \Drupal\Core\Form\FormStateInterface;
  *   default_widget = "premium_content",
  *   default_formatter = "premium_content",
  * )
- *
- * @todo: Add new formatter and change default_formatter value.
  */
 class PremiumContent extends FieldItemBase {
 
@@ -68,8 +66,6 @@ class PremiumContent extends FieldItemBase {
    */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     $element = [];
-
-    // Premium field settings
     $premium_field = $form_state->getFormObject()->getEntity();
     $bundle_fields = \Drupal::entityManager()
       ->getFieldDefinitions($premium_field->getTargetEntityTypeId(), $premium_field->getTargetBundle());
@@ -79,6 +75,8 @@ class PremiumContent extends FieldItemBase {
         $options[$bundle_field->getName()] = $bundle_field->getLabel();
       }
     }
+
+    // Premium field settings
     $element['premium_fields'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Premium fields'),
@@ -86,8 +84,6 @@ class PremiumContent extends FieldItemBase {
       '#default_value' => $this->getSetting('premium_fields'),
       '#options' => $options,
     ];
-
-//    dpm($options);
 
     // Teaser field settings
     $element['teaser_field'] = [

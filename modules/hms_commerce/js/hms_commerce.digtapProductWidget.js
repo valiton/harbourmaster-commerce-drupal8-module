@@ -10,10 +10,10 @@
     attach: function(context, settings) {
 
       // Configure widgets.
-      var apiSource = settings.hms_commerce.api_source;
+      var bestsellerUrl = settings.hms_commerce.bestseller_url;
       //window._digtapq = window._digtapq || [];
       //window._digtapq.push(['configure', {
-      //  api: apiSource
+      //  api: bestsellerUrl
       //}]);
 
       $(".digtap-product-widget").click(function() {

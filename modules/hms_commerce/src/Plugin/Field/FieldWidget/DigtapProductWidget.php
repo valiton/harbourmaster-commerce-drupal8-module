@@ -29,11 +29,11 @@ class DigtapProductWidget extends WidgetBase {
         '#attributes' => ['class' => ['digtap-product-widget']]
       ];
     // Attach JS and its settings to any page displaying this field.
-    $api_source = \Drupal::service('hms_commerce.settings')->getApiUrl(TRUE);
-    if (!empty($api_source)) {
+    $bestseller_url = \Drupal::service('hms_commerce.settings')->getApiUrl(TRUE);
+    if (!empty($bestseller_url)) {
       $form['#attached']['library'][] = 'hms_commerce/digtapProductWidget';
       $form['#attached']['drupalSettings']['hms_commerce'] = [
-        'api_source' => $api_source,
+        'bestseller_url' => $bestseller_url,
       ];
     }
     return $element;
