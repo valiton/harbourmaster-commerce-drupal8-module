@@ -14,7 +14,7 @@ class Digtap {
 
   const PRICE_CATEGORY_API_PATH = '/home/de/api/v1/products';
   const DIGTAP_WIDGET_JS_PATH = '/digtap/widgets.min.js';
-  const PREMIUM_CONTENT_JS_PATH = 'https://digtap-staging-prototype.sso-service.de/assets/js/premium-content.min.js';
+  const PREMIUM_CONTENT_JS_PATH = '/assets/premium-content.min.js';
 
   /**
    * Digtap constructor.
@@ -28,42 +28,66 @@ class Digtap {
   }
 
   /**
-   * Sets the API base url setting.
+   * Sets the Bestseller API url.
    *
    * @param string $url
    *  Absolute url string without trailing slash.
    */
-  public function setBaseApiUrl($url) {
+  public function setBestsellerApiUrl($url) {
     $this->configFactory->getEditable('hms_commerce.settings')
-      ->set('api_source', $url)->save();
+      ->set('bestseller_url', $url)->save();
     // Refresh config object after making changes.
     $this->config = $this->configFactory->get('hms_commerce.settings');
   }
 
   /**
-   * Gets the API base url setting.
+   * Gets the Bestseller API url.
    *
    * @param bool $display_error
-   *  Absolute url string without trailing slash.
+   *  If TRUE and no URL is set, an error is logged and displayed to privileged
+   *  user.
    *
    * @return string
    *  Returns the URL string or an empty string.
    */
-  public function getBaseApiUrl($display_error = FALSE) {
-    $api_url = $this->config->get('api_source');
-    if (!empty($api_url)) {
-      return ($api_url);
+  public function getBestsellerApiUrl($display_error = FALSE) {
+    $bestseller_url = $this->config->get('bestseller_url');
+    if (!empty($bestseller_url)) {
+      return ($bestseller_url);
     }
     // Warn administrative user if the API URL is not set.
     elseif ($display_error) {
-      $message = "For products to display, the API source URL needs to be set <a href='@url'>here</a>.";
+      $message = "For products to display, the Bestseller API URL needs to be set <a href='@url'>here</a>.";
       self::registerError($message, ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"], 'warning');
     }
     return '';
   }
 
   /**
-   * Gets the url for a certain resource from the base API.
+   * Gets the Usermanager API url from the hms module.
+   *
+   * @param bool $display_error
+   *  If TRUE and no URL is set, an error is logged and displayed to privileged
+   *  user.
+   *
+   * @return string
+   *  Returns the URL string or an empty string.
+   */
+  private function getUsermanagerApiUrl($display_error = FALSE) {
+    $usermanager_url = $this->configFactory->get('hms.settings')->get('user_manager_url');
+    if (!empty($usermanager_url)) {
+      return ($usermanager_url);
+    }
+    // Warn administrative user if the API URL is not set.
+    elseif ($display_error) {
+      $message = "For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.";
+      self::registerError($message, ['@url' => $GLOBALS['base_url'] . "/admin/config/people/hms"], 'warning');
+    }
+    return '';
+  }
+
+  /**
+   * Gets the url for a certain resource.
    *
    * @param string $resource
    *
@@ -71,16 +95,13 @@ class Digtap {
    *  Returns the resource URL string or an empty string.
    */
   public function getApiUrl($resource) {
-    $base_url = $this->getBaseApiUrl(TRUE);
-    if (!empty($base_url)) {
-      switch($resource) {
-        case 'price_category':
-          return $base_url . self::PRICE_CATEGORY_API_PATH;
-        case 'digtap_widgets':
-          return $base_url . self::DIGTAP_WIDGET_JS_PATH;
-        case 'premium_content':
-          return self::PREMIUM_CONTENT_JS_PATH; //todo
-      }
+    switch($resource) {
+      case 'price_category':
+        return $this->getBestsellerApiUrl(TRUE) . self::PRICE_CATEGORY_API_PATH;
+      case 'digtap_widgets':
+        return $this->getBestsellerApiUrl(TRUE) . self::DIGTAP_WIDGET_JS_PATH;
+      case 'premium_content':
+        return $this->getUsermanagerApiUrl(TRUE) . self::PREMIUM_CONTENT_JS_PATH;
     }
     return '';
   }
