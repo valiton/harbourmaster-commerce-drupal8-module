@@ -94,7 +94,7 @@ class Digtap {
    * @return string
    *  Returns the resource URL string or an empty string.
    */
-  public function getApiUrl($resource) {
+  public function getResourceUrl($resource) {
     switch($resource) {
       case 'price_category':
         return $this->getBestsellerApiUrl(TRUE) . self::PRICE_CATEGORY_API_PATH;

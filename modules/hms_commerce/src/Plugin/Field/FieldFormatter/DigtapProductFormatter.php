@@ -36,7 +36,7 @@ class DigtapProductFormatter extends FormatterBase {
     }
 
     // Attach JS and its settings to any page displaying this field.
-    $bestseller_url = \Drupal::service('hms_commerce.settings')->getApiUrl(TRUE);
+    $bestseller_url = \Drupal::service('hms_commerce.settings')->getResourceUrl(TRUE);
     if (!empty($bestseller_url)) {
       $elements['#attached']['library'][] = 'hms_commerce/products';
       $elements['#attached']['drupalSettings']['hms_commerce'] = [
