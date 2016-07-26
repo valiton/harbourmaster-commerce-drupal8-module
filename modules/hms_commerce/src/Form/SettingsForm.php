@@ -34,7 +34,14 @@ class SettingsForm extends ConfigFormBase {
       '#title' => $this->t('Bestseller API URL'),
       '#default_value' => \Drupal::service('hms_commerce.settings')->getSetting('bestseller_url'),
       '#description' => $this->t('Absolute URL to the Bestseller API without trailing slash.'),
-    );
+    ];
+
+    $form['entitlement_group_name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Entitlement group name'),
+      '#default_value' => \Drupal::service('hms_commerce.settings')->getSetting('entitlement_group_name'),
+      '#description' => $this->t(''), //todo Add field description.
+    ];
     return parent::buildForm($form, $form_state);
   }
 

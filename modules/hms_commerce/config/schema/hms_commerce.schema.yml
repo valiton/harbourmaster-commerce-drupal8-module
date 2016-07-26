@@ -2,5 +2,8 @@ hms_commerce.settings:
   type: config_object
   mapping:
     bestseller_url:
-      label: 'API source'
+      label: 'Bestseller API URL'
+      type: string
+    entitlement_group_name:
+      label: 'Entitlement group name'
       type: string
