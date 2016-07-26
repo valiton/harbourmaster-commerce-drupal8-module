@@ -3,9 +3,9 @@
 namespace Drupal\hms_commerce;
 
 /**
- * Cryptor drupal service class.
+ * Encrypter drupal service class.
  */
-class Cryptor {
+class Encrypter {
 
   private function hex_chars($data) {
     $hex = '';
@@ -76,7 +76,7 @@ class Cryptor {
     return hash_hmac('sha1', $contentId, $SHARD_SECRET_KEY);
   }
 
-  public function encodeContent($contentId, $string) {
+  public function encryptContent($contentId, $string) {
     $key = $this->getCryptoKeyForContenId($contentId);
     $content = $this->hex_chars($this->xor_string($string, $key));
     return $content;

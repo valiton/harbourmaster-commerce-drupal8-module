@@ -33,7 +33,7 @@ class PremiumContentManager {
     }
   }
 
-  public function encryptPremiumFields(&$build, $cryptor) {
+  public function encryptPremiumFields(&$build, $encrypter) {
     $build['#attached']['library'][] = 'hms_commerce/premiumContent';
     $entity_id = $this->entity->id();
     $entity_type = $this->entity->getEntityTypeId();
@@ -42,9 +42,9 @@ class PremiumContentManager {
         $rendered_field = render($build[$premium_field_name]);
         if (!empty($rendered_field)) {
           $encrypted_field = [
-            '#markup' => "<div hms-access='hasAbo OR " . $entity_type . "Id" . $entity_id. "' hms-external-id='" //todo
+            '#markup' => "<div hms-access='hasAbo OR " . $entity_type . "Id" . $entity_id. "' hms-external-id='"
               . $entity_type . "-" . $entity_id . "'>"
-              . $cryptor->encodeContent($entity_id, $rendered_field)
+              . $encrypter->encryptContent($entity_id, $rendered_field)
               . "</div>",
             '#weight' => $build[$premium_field_name]['#weight'],
           ];
