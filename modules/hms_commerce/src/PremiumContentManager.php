@@ -88,7 +88,7 @@ class PremiumContentManager {
         }
       }
       else {
-        $settings::registerError('There was a problem connecting to the API: Either the service is down, or an incorrect URL is set in the module settings.', [], 'error');
+        $settings::registerError('There was a problem connecting to the API: Either the service is down, or an incorrect URL is set in the module settings.', 'error');
       }
     }
     return $categories;

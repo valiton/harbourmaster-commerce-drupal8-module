@@ -29,10 +29,10 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {;
-    $form['bestseller_url'] = array(
+    $form['bestseller_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Bestseller API URL'),
-      '#default_value' => \Drupal::service('hms_commerce.settings')->getBestsellerApiUrl(),
+      '#default_value' => \Drupal::service('hms_commerce.settings')->getSetting('bestseller_url'),
       '#description' => $this->t('Absolute URL to the Bestseller API without trailing slash.'),
     );
     return parent::buildForm($form, $form_state);
@@ -57,7 +57,9 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    \Drupal::service('hms_commerce.settings')->setBestsellerApiUrl($form_state->getValue('bestseller_url'));
+    $settings = \Drupal::service('hms_commerce.settings');
+    $settings->saveSetting('bestseller_url', $form_state->getValue('bestseller_url'));
+    $settings->saveSetting('entitlement_group_name', $form_state->getValue('entitlement_group_name'));
     parent::submitForm($form, $form_state);
   }
 }
