@@ -54,6 +54,20 @@ class PremiumContentManager {
     }
   }
 
+  private function addPremiumFieldMarkup($encrypted_string) {
+    $entity_id = $this->entity->id();
+    $entity_type = $this->entity->getEntityTypeId();
+    $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
+    $output = "<div hms-access='"
+      . $entitlement_group_name
+      . $entity_type . "Id" . $entity_id
+      . "' hms-external-id='"
+      . $entity_type . "-" . $entity_id . "'>"
+      . $encrypted_string
+      . "</div>";
+    return $output;
+  }
+
   public function showTeaser(&$build) {
     $teaser_field = $this->premiumContentField->getSetting('teaser_field');
     if (!empty($teaser_field) && isset($build[$teaser_field])) {
