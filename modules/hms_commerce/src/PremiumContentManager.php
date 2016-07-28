@@ -95,14 +95,19 @@ class PremiumContentManager {
     $settings = \Drupal::service('hms_commerce.settings');
     $url = $settings->getResourceUrl('price_category');
     if (!empty($url)) {
-      $response = json_decode(file_get_contents($url));
-      if (isset($response->products)) {
-        foreach($response->products as $category) {
-          $categories[$category->product_id] = $category->product;
+      if (($json = @file_get_contents($url)) !== FALSE) {
+        $response = json_decode($json);
+        if (isset($response->products)) {
+          foreach($response->products as $category) {
+            $categories[$category->product_id] = $category->product;
+          }
+        }
+        else {
+          $settings::registerError(t("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module."), 'error');
         }
       }
       else {
-        $settings::registerError('There was a problem connecting to the API: Either the service is down, or an incorrect URL is set in the module settings.', 'error');
+        $settings::registerError(t("There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'error');
       }
     }
     return $categories;
