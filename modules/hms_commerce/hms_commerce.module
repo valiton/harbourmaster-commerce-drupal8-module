@@ -39,6 +39,7 @@ function hms_commerce_entity_view_alter(array &$build, Drupal\Core\Entity\Entity
 
   $manager = new PremiumContentManager($entity);
   if ($manager->isPremium()) {
+    $manager->setEntitlementGroupName(\Drupal::service('hms_commerce.settings')->getSetting('entitlement_group_name'));
     $manager->encryptPremiumFields($build, \Drupal::service('hms_commerce.encrypter'));
     $manager->showTeaser($build);
   }

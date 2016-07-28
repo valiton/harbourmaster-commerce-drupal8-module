@@ -11,6 +11,7 @@ class PremiumContentManager {
   private $premiumFields = [];
   private $premium = FALSE;
   private $premiumContentField;
+  private $entitlementGroupName;
 
   /**
    * PremiumContentManager constructor.
@@ -33,19 +34,18 @@ class PremiumContentManager {
     }
   }
 
+  public function setEntitlementGroupName($name) {
+    $this->entitlementGroupName = $name;
+  }
+
   public function encryptPremiumFields(&$build, $encrypter) {
     $build['#attached']['library'][] = 'hms_commerce/premiumContent';
-    $entity_id = $this->entity->id();
-    $entity_type = $this->entity->getEntityTypeId();
     foreach($this->premiumFields as $premium_field_name) {
       if (isset($build[$premium_field_name])) {
         $rendered_field = render($build[$premium_field_name]);
         if (!empty($rendered_field)) {
           $encrypted_field = [
-            '#markup' => "<div hms-access='hasAbo OR " . $entity_type . "Id" . $entity_id. "' hms-external-id='"
-              . $entity_type . "-" . $entity_id . "'>"
-              . $encrypter->encryptContent($entity_id, $rendered_field)
-              . "</div>",
+            '#markup' => $this->addPremiumFieldMarkup($encrypter->encryptContent($this->entity->id(), $rendered_field)),
             '#weight' => $build[$premium_field_name]['#weight'],
           ];
           $build[$premium_field_name] = $encrypted_field;

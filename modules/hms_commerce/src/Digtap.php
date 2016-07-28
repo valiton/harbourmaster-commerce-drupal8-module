@@ -28,7 +28,7 @@ class Digtap {
   }
 
   /**
-   * Stores a setting in Drupal configuration.
+   * Saves a setting into Drupal configuration.
    *
    * @param string $setting_name
    *  The name of the setting.
