@@ -68,10 +68,20 @@ class PremiumContentManager {
     return $output;
   }
 
-  public function showTeaser(&$build) {
+  public function addTeaserMarkup(&$build) {
     $teaser_field = $this->premiumContentField->getSetting('teaser_field');
     if (!empty($teaser_field) && isset($build[$teaser_field])) {
-      //todo
+      $rendered_field = render($build[$teaser_field]);
+      $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
+      $rendered_teaser = [
+        '#markup' => "<div hms-access='NOT("
+          . $entitlement_group_name
+          . $this->entity->getEntityTypeId() . "Id" . $this->entity->id() . ")'>"
+          . $rendered_field
+          . "</div>",
+        '#weight' => $build[$teaser_field]['#weight'],
+      ];
+      $build[$teaser_field] = $rendered_teaser;
     }
   }
 
