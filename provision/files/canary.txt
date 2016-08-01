@@ -1,4 +1,0 @@
-This file is used to check
-whether line terminators
-have been checked out
-correctly (using git).
