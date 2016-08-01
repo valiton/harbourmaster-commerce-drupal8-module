@@ -30,12 +30,13 @@ class PremiumContentWidget extends WidgetBase {
       '#default_value' => !is_null($default_value),
     ];
 
+    $price_categories = PremiumContentManager::getPriceCategories();
     $element['value'] = [
       '#type' => 'select',
 
       // Make sure the dropdown shows option '- Current -' when there is no connection to Bestseller API
       // or if the category ID vanished from it. This is to make sure that the value is kept after clicking 'Save'.
-      '#options' => [$default_value => $this->t('- Current -')] + PremiumContentManager::getPriceCategories(),
+      '#options' => (!isset($price_categories[$default_value]) ? [$default_value => $this->t('- Current (connection error) -')] : []) + $price_categories,
 
       '#empty_value' => '',
       '#default_value' => $default_value,
