@@ -42,6 +42,12 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => \Drupal::service('hms_commerce.settings')->getSetting('entitlement_group_name'),
       '#description' => $this->t(''), //todo Add field description.
     ];
+
+    $form['usermanager_configuration_link'] = [
+      '#type' => 'markup',
+      '#markup' => t("The usermanager API URL can be configured <a href='@url' target='_blank'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/hms#edit-usermanager-url"]),
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 

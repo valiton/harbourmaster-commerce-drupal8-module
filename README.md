@@ -1,13 +1,10 @@
 
 Configuration
 -----------
-
   * After installing the module, set the Bestseller API URL and entitlement
   group name on page admin/config/hmscommerce.
-
   * If not already set, also provide the usermanager API URL on page
   admin/people/hms.
-
 
 Premium content
 -----------
@@ -28,7 +25,6 @@ checkbox on the entity edit page and set the price category. The price
 categories are populated from Bestseller. The entity must have a price category
 other than '- None -', otherwise it is not premium.
 
-
 Premium download
 -----------
 ### Configuration
@@ -36,5 +32,6 @@ Premium download
   * To display products on an entity, add the 'Bestseller product' field to it.
 
 ### Usage
+
 For products to display on an entity view page, populate the 'Bestseller
 product' field with products on the entity edit page (not yet implemented).
