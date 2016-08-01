@@ -9,7 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * @FieldWidget(
  *   id = "digtap_product",
- *   label = @Translation("Digtap product"),
+ *   label = @Translation("Bestseller product"),
  *   field_types = {
  *     "digtap_product"
  *   }

@@ -12,8 +12,8 @@ use \Drupal\Core\Form\FormStateInterface;
  * @FieldType(
  *   id = "premium_content",
  *   label = @Translation("Premium content"),
- *   description = @Translation("Stores the price category of a premium content piece."),
- *   category = @Translation("Thunder"),
+ *   description = @Translation("Defines a premium content piece by allowing to set what fields to encrypt and add a bestseller price to it."),
+ *   category = @Translation("Reference"),
  *   default_widget = "premium_content",
  *   default_formatter = "premium_content",
  * )

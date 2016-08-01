@@ -12,9 +12,9 @@ use Drupal\Core\Form\FormStateInterface;
  *
  * @FieldType(
  *   id = "digtap_product",
- *   label = @Translation("Product"),
- *   description = @Translation("This field stores product category ids."),
- *   category = @Translation("Thunder"),
+ *   label = @Translation("Bestseller product"),
+ *   description = @Translation("This field stores and displays Bestseller products."),
+ *   category = @Translation("Reference"),
  *   default_widget = "digtap_product",
  *   default_formatter = "digtap_product"
  * )

@@ -8,7 +8,7 @@ use Drupal\Core\Field\FormatterBase;
 /**
  * @FieldFormatter(
  *   id = "digtap_product",
- *   label = @Translation("Digtap product"),
+ *   label = @Translation("Bestseller product"),
  *   field_types = {
  *     "digtap_product"
  *   }
