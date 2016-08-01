@@ -13,7 +13,7 @@ class Digtap {
   private $config;
 
   const PRICE_CATEGORY_API_PATH = '/home/de/api/v1/products';
-  const DIGTAP_WIDGET_JS_PATH = '/digtap/widgets.min.js';
+  const DIGTAP_WIDGET_JS_PATH = '/bundles/digtapecom/widgets/frontend/stage/digtap-widget-frontend.min.js';
   const PREMIUM_CONTENT_JS_PATH = '/assets/premium-content.min.js';
 
   /**
