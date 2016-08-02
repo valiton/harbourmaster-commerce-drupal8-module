@@ -30,7 +30,8 @@ class PremiumContentWidget extends WidgetBase {
       '#default_value' => !is_null($default_value),
     ];
 
-    $price_categories = PremiumContentManager::getPriceCategories();
+    $url = \Drupal::service('hms_commerce.settings')->getResourceUrl('price_category');
+    $price_categories = PremiumContentManager::getPriceCategories($url);
     $element['value'] = [
       '#type' => 'select',
 

@@ -2,6 +2,8 @@
 
 namespace Drupal\hms_commerce;
 
+use Drupal\hms_commerce\Digtap;
+
 /**
  * PremiumContentManager drupal service class.
  */
@@ -94,16 +96,17 @@ class PremiumContentManager {
   }
 
   /**
+   * @param string $url
+   *  Url called to get the price categories.
+   *
    * @return array
    *  Array with category IDs as indexes and prices as values.
    *
    * @todo Either use curl or implement hook_requirements to check for allow_url_fopen.
    * @todo Adjust method to API which is to change.
    */
-  public static function getPriceCategories() {
+  public static function getPriceCategories($url) {
     $categories = [];
-    $settings = \Drupal::service('hms_commerce.settings');
-    $url = $settings->getResourceUrl('price_category');
     if (!empty($url)) {
       if (($json = @file_get_contents($url)) !== FALSE) {
         $response = json_decode($json);
@@ -113,11 +116,11 @@ class PremiumContentManager {
           }
         }
         else {
-          $settings::registerError(t("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module."), 'error');
+          Digtap::registerError(t("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module."), 'error');
         }
       }
       else {
-        $settings::registerError(t("There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'error');
+        Digtap::registerError(t("There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'error');
       }
     }
     return $categories;
