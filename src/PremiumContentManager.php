@@ -14,12 +14,14 @@ class PremiumContentManager {
   private $premium = FALSE;
   private $premiumContentField;
   private $entitlementGroupName;
+  private $hmsContenetId;
 
   /**
    * PremiumContentManager constructor.
    */
   function __construct($entity) {
     $this->entity = $entity;
+    $this->hmsContenetId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
     $this->setPremiumFields();
   }
 
@@ -57,14 +59,13 @@ class PremiumContentManager {
   }
 
   private function addPremiumFieldMarkup($encrypted_string) {
-    $entity_id = $this->entity->id();
-    $entity_type = $this->entity->getEntityTypeId();
     $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
     $output = "<div hms-access='"
       . $entitlement_group_name
-      . $entity_type . "Id" . $entity_id
+      . $this->hmsContenetId
       . "' hms-external-id='"
-      . $entity_type . "-" . $entity_id . "'>"
+      . $this->hmsContenetId
+      . "'>"
       . $encrypted_string
       . "</div>";
     return $output;
@@ -78,7 +79,8 @@ class PremiumContentManager {
       $rendered_teaser = [
         '#markup' => "<div hms-access='NOT("
           . $entitlement_group_name
-          . $this->entity->getEntityTypeId() . "Id" . $this->entity->id() . ")'>"
+          . $this->hmsContenetId
+          . ")'>"
           . $rendered_field
           . "</div>",
         '#weight' => $build[$teaser_field]['#weight'],
