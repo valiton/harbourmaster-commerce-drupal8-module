@@ -49,7 +49,7 @@ class Encrypter {
     if (ord($c{0}) >= 252 && ord($c{0}) <= 253) {
       return (ord($c{0}) - 252) * 1073741824 + (ord($c{1}) - 128) * 16777216 + (ord($c{2}) - 128) * 262144 + (ord($c{3}) - 128) * 4096 + (ord($c{4}) - 128) * 64 + (ord($c{5}) - 128);
     }
-    if (ord($c{0}) >= 254 && ord($c{0}) <= 255)    //  error
+    if (ord($c{0}) >= 254 && ord($c{0}) <= 255) // error
     {
       return FALSE;
     }
@@ -66,9 +66,7 @@ class Encrypter {
     $chrArray = preg_split('//u', $string, -1, PREG_SPLIT_NO_EMPTY);
     for ($i = 0; $i < count($chrArray); $i++) {
       $ord = $this->uniord($chrArray[$i]);
-
       $keyCharOrd = $this->uniord($key[$i % mb_strlen($key)]);
-
       $result .= $this->unichr($ord ^ $keyCharOrd);
     }
     return $result;

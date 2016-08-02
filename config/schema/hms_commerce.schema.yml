@@ -10,3 +10,6 @@ hms_commerce.settings:
     shared_secret_key:
       label: 'Shared secret key'
       type: string
+    premium_content_error:
+      label: 'Premium content error message'
+      type: string

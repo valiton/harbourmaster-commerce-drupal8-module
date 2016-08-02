@@ -1,3 +1,4 @@
 bestseller_url: ''
 entitlement_group_name: 'hasAbo'
 shared_secret_key: ''
+premium_content_error: 'We are sorry, we could not show the premium content.'

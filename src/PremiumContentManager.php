@@ -2,25 +2,27 @@
 
 namespace Drupal\hms_commerce;
 
-use Drupal\hms_commerce\Digtap;
-
 /**
  * PremiumContentManager drupal service class.
  */
 class PremiumContentManager {
 
   private $entity;
+  private $digtap_settings;
   private $premiumFields = [];
   private $premium = FALSE;
   private $premiumContentField;
   private $entitlementGroupName;
   private $hmsContentId;
 
+  const ERROR_MESSAGE_WEIGHT = -500;
+
   /**
    * PremiumContentManager constructor.
    */
-  function __construct($entity) {
+  function __construct($entity, $digtap_settings) {
     $this->entity = $entity;
+    $this->digtap_settings = $digtap_settings;
     $this->hmsContentId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
     $this->setPremiumFields();
   }
@@ -43,14 +45,16 @@ class PremiumContentManager {
   }
 
   public function encryptPremiumFields(&$build, $encrypter) {
+    $this->addPremiumContentErrorMessage($build);
     $build['#attached']['library'][] = 'hms_commerce/premiumContent';
+
     foreach($this->premiumFields as $premium_field_name) {
       if (isset($build[$premium_field_name])) {
         $rendered_field = render($build[$premium_field_name]);
         if (!empty($rendered_field)) {
           $encrypted_content = $encrypter
             ->setHmsContentId($this->hmsContentId)
-            ->setSecretKey(\Drupal::service('hms_commerce.settings')->getSetting('shared_secret_key')) //todo: dependency injection
+            ->setSecretKey($this->digtap_settings->getSetting('shared_secret_key'))
             ->encryptContent($rendered_field);
           $encrypted_field = [
             '#markup' => $this->addPremiumFieldMarkup($encrypted_content),
@@ -59,6 +63,16 @@ class PremiumContentManager {
           $build[$premium_field_name] = $encrypted_field;
         }
       }
+    }
+  }
+
+  function addPremiumContentErrorMessage(&$build) {
+    $message = $this->digtap_settings->getSetting('premium_content_error');
+    if (!empty($message)) {
+      $build['premium_content_error_message'] = [
+        '#markup' => "<div class='hms-access-error'>" .  t($message) . "</div>",
+        '#weight' => self::ERROR_MESSAGE_WEIGHT,
+      ];
     }
   }
 
