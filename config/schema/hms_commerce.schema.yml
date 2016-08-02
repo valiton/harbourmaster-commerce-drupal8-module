@@ -7,3 +7,6 @@ hms_commerce.settings:
     entitlement_group_name:
       label: 'Entitlement group name'
       type: string
+    shared_secret_key:
+      label: 'Shared secret key'
+      type: string

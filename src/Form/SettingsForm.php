@@ -28,19 +28,28 @@ class SettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {;
+  public function buildForm(array $form, FormStateInterface $form_state) {
+    $settings = \Drupal::service('hms_commerce.settings');
+
     $form['bestseller_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Bestseller API URL'),
-      '#default_value' => \Drupal::service('hms_commerce.settings')->getSetting('bestseller_url'),
+      '#default_value' => $settings->getSetting('bestseller_url'),
       '#description' => $this->t('Absolute URL to the Bestseller API without trailing slash.'),
     ];
 
     $form['entitlement_group_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Entitlement group name'),
-      '#default_value' => \Drupal::service('hms_commerce.settings')->getSetting('entitlement_group_name'),
+      '#default_value' => $settings->getSetting('entitlement_group_name'),
       '#description' => $this->t(''), //todo Add field description.
+    ];
+
+    $form['shared_secret_key'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Shared secret key'),
+      '#default_value' => $settings->getSetting('shared_secret_key'),
+      '#description' => $this->t('Shared secret key used to encrypt the content.'),
     ];
 
     $form['usermanager_configuration_link'] = [
@@ -73,6 +82,7 @@ class SettingsForm extends ConfigFormBase {
     $settings = \Drupal::service('hms_commerce.settings');
     $settings->saveSetting('bestseller_url', $form_state->getValue('bestseller_url'));
     $settings->saveSetting('entitlement_group_name', $form_state->getValue('entitlement_group_name'));
+    $settings->saveSetting('shared_secret_key', $form_state->getValue('shared_secret_key'));
     parent::submitForm($form, $form_state);
   }
 }

@@ -14,14 +14,14 @@ class PremiumContentManager {
   private $premium = FALSE;
   private $premiumContentField;
   private $entitlementGroupName;
-  private $hmsContenetId;
+  private $hmsContentId;
 
   /**
    * PremiumContentManager constructor.
    */
   function __construct($entity) {
     $this->entity = $entity;
-    $this->hmsContenetId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
+    $this->hmsContentId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
     $this->setPremiumFields();
   }
 
@@ -48,8 +48,12 @@ class PremiumContentManager {
       if (isset($build[$premium_field_name])) {
         $rendered_field = render($build[$premium_field_name]);
         if (!empty($rendered_field)) {
+          $encrypted_content = $encrypter
+            ->setHmsContentId($this->hmsContentId)
+            ->setSecretKey(\Drupal::service('hms_commerce.settings')->getSetting('shared_secret_key')) //todo: dependency injection
+            ->encryptContent($rendered_field);
           $encrypted_field = [
-            '#markup' => $this->addPremiumFieldMarkup($encrypter->encryptContent($this->entity->id(), $rendered_field)),
+            '#markup' => $this->addPremiumFieldMarkup($encrypted_content),
             '#weight' => $build[$premium_field_name]['#weight'],
           ];
           $build[$premium_field_name] = $encrypted_field;
@@ -62,9 +66,9 @@ class PremiumContentManager {
     $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
     $output = "<div hms-access='"
       . $entitlement_group_name
-      . $this->hmsContenetId
+      . $this->hmsContentId
       . "' hms-external-id='"
-      . $this->hmsContenetId
+      . $this->hmsContentId
       . "'>"
       . $encrypted_string
       . "</div>";
@@ -79,7 +83,7 @@ class PremiumContentManager {
       $rendered_teaser = [
         '#markup' => "<div hms-access='NOT("
           . $entitlement_group_name
-          . $this->hmsContenetId
+          . $this->hmsContentId
           . ")'>"
           . $rendered_field
           . "</div>",

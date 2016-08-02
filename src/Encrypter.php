@@ -7,6 +7,9 @@ namespace Drupal\hms_commerce;
  */
 class Encrypter {
 
+  private $sharedSecretKey;
+  private $hmsContentId;
+
   private function hex_chars($data) {
     $hex = '';
     for ($i = 0; $i < strlen($data); $i++) {
@@ -71,14 +74,18 @@ class Encrypter {
     return $result;
   }
 
-  public function getCryptoKeyForContenId($contentId) {
-    $SHARD_SECRET_KEY = "This is a shard secret between drupal and the usermanger"; //todo
-    return hash_hmac('sha1', $contentId, $SHARD_SECRET_KEY);
+  public function setHmsContentId($content_id) {
+    $this->hmsContentId = $content_id;
+    return $this;
   }
 
-  public function encryptContent($contentId, $string) {
-    $key = $this->getCryptoKeyForContenId($contentId);
-    $content = $this->hex_chars($this->xor_string($string, $key));
-    return $content;
+  public function setSecretKey($shared_secret_key) {
+    $this->sharedSecretKey = $shared_secret_key;
+    return $this;
+  }
+
+  public function encryptContent($string) {
+    $key = hash_hmac('sha1', $this->hmsContentId, $this->sharedSecretKey);
+    return $this->hex_chars($this->xor_string($string, $key));
   }
 }
