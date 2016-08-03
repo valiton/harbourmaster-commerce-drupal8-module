@@ -36,10 +36,8 @@ function hms_commerce_library_info_build() {
  * Implements hook_entity_view_alter.
  */
 function hms_commerce_entity_view_alter(array &$build, Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display) {
-
   $manager = new PremiumContentManager($entity, \Drupal::service('hms_commerce.settings'));
   if ($manager->isPremium()) {
-    $manager->setEntitlementGroupName(\Drupal::service('hms_commerce.settings')->getSetting('entitlement_group_name'));
     $manager->encryptPremiumFields($build, \Drupal::service('hms_commerce.encrypter'));
     $manager->addTeaserMarkup($build);
   }

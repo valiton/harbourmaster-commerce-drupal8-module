@@ -23,6 +23,7 @@ class PremiumContentManager {
   function __construct($entity, $digtap_settings) {
     $this->entity = $entity;
     $this->digtap_settings = $digtap_settings;
+    $this->entitlementGroupName = $this->digtap_settings->getSetting('entitlement_group_name');
     $this->hmsContentId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
     $this->setPremiumFields();
   }
@@ -38,10 +39,6 @@ class PremiumContentManager {
         break;
       }
     }
-  }
-
-  public function setEntitlementGroupName($name) {
-    $this->entitlementGroupName = $name;
   }
 
   public function encryptPremiumFields(&$build, $encrypter) {
