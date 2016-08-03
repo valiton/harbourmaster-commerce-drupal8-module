@@ -26,15 +26,19 @@ class PremiumContentManager {
     $this->entitlementGroupName = $this->digtap_settings->getSetting('entitlement_group_name');
     $this->hmsContentId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
     $this->setPremiumFields();
+    if (!empty($this->getPremiumFields())) {
+      $this->premium = TRUE;
+    }
   }
 
   private function setPremiumFields() {
     foreach($this->entity->getFields() as $field) {
       if ($field->getFieldDefinition()->getType() == 'premium_content') {
         $this->premiumContentField = $field;
-        if (!empty($this->premiumContentField->getValue())) {
-          $this->premium = TRUE;
-          $this->premiumFields = array_filter($this->premiumContentField->getSetting('premium_fields'), function($i) {return !empty($i);});
+        if (!$this->premiumContentField->isEmpty()) {
+          $this->premiumFields = array_filter(
+            $this->premiumContentField->getSetting('premium_fields'), function($i) {return !empty($i);}
+          );
         }
         break;
       }
