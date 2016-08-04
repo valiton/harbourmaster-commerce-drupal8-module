@@ -76,14 +76,16 @@ class Digtap {
    *  Returns the resource URL string or an empty string.
    */
   public function getResourceUrl($resource) {
-    $bestseller_url_error_message = t("For products to display, the Bestseller API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]);
+    $bestseller_url = $this->getSetting('bestseller_url', t("For products to display, the Bestseller API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]));
     switch($resource) {
+      case 'bestseller':
+        return $bestseller_url;
 
       case 'price_category':
-        return $this->getSetting('bestseller_url', $bestseller_url_error_message) . self::PRICE_CATEGORY_API_PATH;
+        return $bestseller_url . self::PRICE_CATEGORY_API_PATH;
 
       case 'digtap_widgets':
-        return $this->getSetting('bestseller_url', $bestseller_url_error_message) . self::DIGTAP_WIDGET_JS_PATH;
+        return $bestseller_url . self::DIGTAP_WIDGET_JS_PATH;
 
       case 'premium_content':
         $error_message = t("For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/hms"]);
