@@ -1,7 +1,6 @@
 <?php
 namespace Drupal\hms_commerce\Plugin\Field\FieldType;
 
-use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use \Drupal\Core\Form\FormStateInterface;
@@ -18,7 +17,7 @@ use \Drupal\Core\Form\FormStateInterface;
  *   default_formatter = "premium_content",
  * )
  */
-class PremiumContent extends FieldItemBase {
+class PremiumContent extends DigtapIdField {
 
   public static function defaultFieldSettings() {
     return [
@@ -26,7 +25,6 @@ class PremiumContent extends FieldItemBase {
       'teaser_field' => [],
     ];/* + parent::defaultFieldSettings();*/
   }
-
 
   /**
    * {@inheritdoc}
@@ -40,37 +38,13 @@ class PremiumContent extends FieldItemBase {
   /**
    * {@inheritdoc}
    */
-  public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return [
-      'columns' => [
-        'value' => [
-          'description' => t('Price category ID.'),
-          'type' => 'int',
-          'unsigned' => TRUE,
-        ],
-      ],
-      'indexes' => ['value' => ['value']],
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isEmpty() {
-    $value = $this->get('value')->getValue();
-    return $value === NULL || $value === '';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     $element = [];
     $premium_field = $form_state->getFormObject()->getEntity();
     $bundle_fields = \Drupal::entityManager()
       ->getFieldDefinitions($premium_field->getTargetEntityTypeId(), $premium_field->getTargetBundle());
     $options = [];
-    foreach($bundle_fields as $bundle_field) {
+    foreach ($bundle_fields as $bundle_field) {
       if ($bundle_field->getType() != 'premium_content') { // Do not include premium_content field itself.
         $options[$bundle_field->getName()] = $bundle_field->getLabel();
       }
