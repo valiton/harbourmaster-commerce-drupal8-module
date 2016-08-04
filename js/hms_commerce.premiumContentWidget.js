@@ -1,6 +1,6 @@
 /**
  * @file
- * Attaches hms_commerce behaviors to the premium_content field's form widget.
+ * Makes the premium_content field widget dynamic.
  */
 (function($) {
 
@@ -8,15 +8,19 @@
 
   Drupal.behaviors.hms_commercePremiumContentWidget = {
     attach: function(context, settings) {
-      var checkbox = '.field--widget-premium-content .form-checkbox';
-      toggleListVisibility();
+      var fieldIds = settings.hms_commerce.premium_content_field_ids;
 
-      $(checkbox).change(function () {
-        toggleListVisibility();
+      $.each(fieldIds, function(index, value) {
+        var checkbox = '#' + value + ' .form-checkbox';
+        var selectList = '#' + value + ' .form-type-select';
+        toggleListVisibility(checkbox, selectList);
+
+        $(checkbox).change(function () {
+          toggleListVisibility(checkbox, selectList);
+        });
       });
 
-      function toggleListVisibility() {
-        var selectList = '.field--widget-premium-content .form-type-select';
+      function toggleListVisibility(checkbox, selectList) {
         if ($(checkbox).is(":checked")) {
           $(selectList).show();
         } else {

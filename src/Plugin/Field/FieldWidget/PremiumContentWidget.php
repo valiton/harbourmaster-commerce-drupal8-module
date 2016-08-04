@@ -44,8 +44,9 @@ class PremiumContentWidget extends WidgetBase {
       '#title' => $this->t('Price category'),
       ];
 
-    // Attach behaviour to display/hide the select field dynamically.
+    // Attach behaviour to display/hide the select field dynamically
     $form['#attached']['library'][] = 'hms_commerce/premiumContentWidget';
+    $form['#attached']['drupalSettings']['hms_commerce']['premium_content_field_ids']['field_' . $element['#title']] = 'edit-field-' . $element['#title'] . '-wrapper';
 
     return $element;
   }

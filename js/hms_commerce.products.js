@@ -1,6 +1,6 @@
 /**
  * @file
- * Attaches hms_commerce behaviors to forms with products.
+ * Makes the digtap_product field formatter display digtap widgets.
  */
 (function($) {
 
@@ -9,24 +9,32 @@
   Drupal.behaviors.hms_commerceProducts = {
     attach: function(context, settings) {
 
-      // Configure widgets.
+      // Configure digtap widgets.
       var bestsellerUrl = settings.hms_commerce.bestseller_url;
       window._digtapq = window._digtapq || [];
       window._digtapq.push(['configure', {
         api: bestsellerUrl
       }]);
 
-      // Place widgets into product divs created by Drupal.
-      var productIds = settings.hms_commerce.product_ids;
+      // Gather settings applying to all field formatters on the page.
       var widgetType = settings.hms_commerce.widget_type;
-      $.each(productIds, function(index, value) {
-        window._digtapq.push(['render', {
-          widget: widgetType,
-          selector: '#digtap-widget-' + widgetType + '-' + index,
-          options: {
-            product_id: Number(value)
-          }
-        }]);
+      var formatterSettings = settings.hms_commerce.digtap_product_formatter_settings;
+
+      $.each(formatterSettings, function(index, value) {
+        // Gather settings applying to this specific formatter.
+        var productIds = value.product_ids;
+        var fieldDomId = value.field_dom_id;
+
+        // Configure digtap widget for each product within this formatter.
+        $.each(productIds, function(index, value) {
+          window._digtapq.push(['render', {
+            widget: widgetType,
+            selector: '#' + fieldDomId + '-' + index,
+            options: {
+              product_id: Number(value)
+            }
+          }]);
+        });
       });
     }
   };
