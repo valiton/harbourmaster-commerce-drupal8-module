@@ -62,7 +62,7 @@ class Digtap {
         $setting = $this->config->get($setting_name);
     }
     if (empty($setting) && !empty($error_message)) {
-      self::registerError($error_message, 'warning');
+      $this->registerError($error_message, 'warning');
     }
     return $setting;
   }
@@ -95,6 +95,35 @@ class Digtap {
   }
 
   /**
+   * @return array
+   *  Array with category IDs as indexes and prices as values.
+   *
+   * @todo Either use curl or implement hook_requirements to check for allow_url_fopen.
+   * @todo Adjust method to API which is to change.
+   */
+  public function getPriceCategories() {
+    $categories = [];
+    $url = $this->getResourceUrl('price_category');
+    if (!empty($url)) {
+      if (($json = @file_get_contents($url)) !== FALSE) {
+        $response = json_decode($json);
+        if (isset($response->products)) {
+          foreach($response->products as $category) {
+            $categories[$category->product_id] = $category->product;
+          }
+        }
+        else {
+          $this->registerError(t("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module. The price category cannot be changed at this time."), 'error');
+        }
+      }
+      else {
+        $this->registerError(t("There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>. The price category cannot be changed at this time.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'error');
+      }
+    }
+    return $categories;
+  }
+
+  /**
    * Logs error and displays it to the privileged user.
    *
    * @param $message
@@ -102,7 +131,7 @@ class Digtap {
    *  Message type (status/warning/error), if set, message is displayed to
    *  privileged user accordingly.
    */
-  public static function registerError($message, $display = NULL) {
+  public function registerError($message, $display = NULL) {
     \Drupal::logger('hms_commerce')->notice($message);
     if (!empty($display)
       && \Drupal::currentUser()->hasPermission('administer hms_commerce settings')) {

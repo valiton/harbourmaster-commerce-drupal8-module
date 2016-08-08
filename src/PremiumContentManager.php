@@ -8,7 +8,7 @@ namespace Drupal\hms_commerce;
 class PremiumContentManager {
 
   private $entity;
-  private $digtap_settings;
+  private $digtapSettings;
   private $premiumFields = [];
   private $premium = FALSE;
   private $premiumContentField;
@@ -22,8 +22,8 @@ class PremiumContentManager {
    */
   function __construct($entity, $digtap_settings) {
     $this->entity = $entity;
-    $this->digtap_settings = $digtap_settings;
-    $this->entitlementGroupName = $this->digtap_settings->getSetting('entitlement_group_name');
+    $this->digtapSettings = $digtap_settings;
+    $this->entitlementGroupName = $this->digtapSettings->getSetting('entitlement_group_name');
     $this->hmsContentId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
     $this->setPremiumFields();
     if (!empty($this->getPremiumFields())) {
@@ -55,7 +55,7 @@ class PremiumContentManager {
         if (!empty($rendered_field)) {
           $encrypted_content = $encrypter
             ->setHmsContentId($this->hmsContentId)
-            ->setSecretKey($this->digtap_settings->getSetting('shared_secret_key'))
+            ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'))
             ->encryptContent($rendered_field);
           $encrypted_field = [
             '#markup' => $this->addPremiumFieldMarkup($encrypted_content),
@@ -68,7 +68,7 @@ class PremiumContentManager {
   }
 
   function addPremiumContentErrorMessage(&$build) {
-    $message = $this->digtap_settings->getSetting('premium_content_error');
+    $message = $this->digtapSettings->getSetting('premium_content_error');
     if (!empty($message)) {
       $build['premium_content_error_message'] = [
         '#markup' => "<div class='hms-access-error'>" .  t($message) . "</div>",
@@ -114,36 +114,5 @@ class PremiumContentManager {
 
   public function getPremiumFields() {
     return $this->premiumFields;
-  }
-
-  /**
-   * @param string $url
-   *  Url called to get the price categories.
-   *
-   * @return array
-   *  Array with category IDs as indexes and prices as values.
-   *
-   * @todo Either use curl or implement hook_requirements to check for allow_url_fopen.
-   * @todo Adjust method to API which is to change.
-   */
-  public static function getPriceCategories($url) {
-    $categories = [];
-    if (!empty($url)) {
-      if (($json = @file_get_contents($url)) !== FALSE) {
-        $response = json_decode($json);
-        if (isset($response->products)) {
-          foreach($response->products as $category) {
-            $categories[$category->product_id] = $category->product;
-          }
-        }
-        else {
-          Digtap::registerError(t("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module. The price category cannot be changed at this time."), 'error');
-        }
-      }
-      else {
-        Digtap::registerError(t("There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>. The price category cannot be changed at this time.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'error');
-      }
-    }
-    return $categories;
   }
 }

@@ -5,7 +5,6 @@ namespace Drupal\hms_commerce\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\hms_commerce\PremiumContentManager;
 
 /**
  * @FieldWidget(
@@ -30,8 +29,7 @@ class PremiumContentWidget extends WidgetBase {
       '#default_value' => !is_null($default_value),
     ];
 
-    $url = \Drupal::service('hms_commerce.settings')->getResourceUrl('price_category');
-    $price_categories = PremiumContentManager::getPriceCategories($url);
+    $price_categories = \Drupal::service('hms_commerce.settings')->getPriceCategories();
     $element['value'] = [
       '#type' => 'select',
 
