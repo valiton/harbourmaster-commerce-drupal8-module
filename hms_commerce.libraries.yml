@@ -12,6 +12,10 @@ premiumContent:
   css:
     theme:
       css/premium-content.css: {}
+  js:
+    js/hms_commerce.premiumContent.js: {}
+  dependencies:
+    - core/jquery
 
 premiumContentWidget:
   version: VERSION

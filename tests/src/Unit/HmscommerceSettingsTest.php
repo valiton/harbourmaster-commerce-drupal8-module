@@ -27,7 +27,6 @@ class HmscommerceSettingsTest extends HmscommerceSettingsTestBase {
    * Test getting a setting.
    */
   public function testGetSetting() {
-    //
     $this->digtapMock->expects($this->never())->method('registerError');
     $this->assertEquals($this->digtap->getSetting('bestseller_url'), $this->config['bestseller_url']);
   }
