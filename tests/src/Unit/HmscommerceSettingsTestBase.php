@@ -19,6 +19,11 @@ class HmscommerceSettingsTestBase extends UnitTestCase {
   private $configFactory;
 
   /**
+   * Used to set a Drupal global. Does not need to be a real URL ATM.
+   */
+  const BASE_URL = 'https://some-url';
+
+  /**
    * {@inheritdoc}
    */
   public function setUp() {
@@ -27,12 +32,21 @@ class HmscommerceSettingsTestBase extends UnitTestCase {
     // Create a dummy container.
     $this->container = new ContainerBuilder();
 
-    // Initial module set up.
+    // The string translation service will be used for most test cases.
+    $this->container->set('string_translation', $this->getStringTranslationStub());
+
+    // Initial config set up. These are the settings the module sets upon
+    // installation (see hms_commerce.settings.yml).
     $this->config = [
       'bestseller_url' => '',
-      'entitlement_group_name' => 'hasAbo'
+      'entitlement_group_name' => 'hasAbo',
     ];
+
+    // Mock the digtap service with the above settings.
     $this->mockDigtapService();
+
+    // Set this Drupal global as it is used in tested class.
+    $GLOBALS['base_url'] = self::BASE_URL;
   }
 
   /**
@@ -42,7 +56,16 @@ class HmscommerceSettingsTestBase extends UnitTestCase {
     $this->configFactory = $this->getConfigFactoryStub(['hms_commerce.settings' => $this->config]);
     $this->digtapMock = $this->getMockBuilder('\Drupal\hms_commerce\Digtap')
       ->setConstructorArgs([$this->configFactory])
+      ->setMethods(['registerError'])
       ->getMock();
+    $this->refreshDigtapService();
+  }
+
+  /**
+   * Adds the Digtap class to the Drupal service container so it can be used
+   * as a Drupal service.
+   */
+  protected function refreshDigtapService() {
     $this->container->set('hms_commerce.settings', $this->digtapMock);
     \Drupal::setContainer($this->container);
     $this->digtap = \Drupal::service('hms_commerce.settings');
