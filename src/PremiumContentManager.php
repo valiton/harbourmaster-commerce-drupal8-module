@@ -2,10 +2,14 @@
 
 namespace Drupal\hms_commerce;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+
 /**
  * PremiumContentManager drupal service class.
  */
 class PremiumContentManager {
+
+  use StringTranslationTrait;
 
   private $entity;
   private $digtapSettings;
@@ -71,7 +75,7 @@ class PremiumContentManager {
     $message = $this->digtapSettings->getSetting('premium_content_error');
     if (!empty($message)) {
       $build['premium_content_error_message'] = [
-        '#markup' => "<div class='hms-access-error'>" .  t($message) . "</div>",
+        '#markup' => "<div class='hms-access-error'>" .  $this->t($message) . "</div>",
         '#weight' => self::ERROR_MESSAGE_WEIGHT,
       ];
     }

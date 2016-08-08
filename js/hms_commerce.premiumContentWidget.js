@@ -1,4 +1,4 @@
-/**https://gitlab.valiton.com/hms/premium-content-client-js/tree/develop
+/**
  * @file
  * Makes the premium_content field widget dynamic.
  */

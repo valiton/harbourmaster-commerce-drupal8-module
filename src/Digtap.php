@@ -3,11 +3,14 @@
 namespace Drupal\hms_commerce;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Digtap drupal service class.
  */
 class Digtap {
+
+  use StringTranslationTrait;
 
   private $configFactory;
   private $config;
@@ -76,7 +79,7 @@ class Digtap {
    *  Returns the resource URL string or an empty string.
    */
   public function getResourceUrl($resource) {
-    $bestseller_url = $this->getSetting('bestseller_url', t("For products to display, the Bestseller API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]));
+    $bestseller_url = $this->getSetting('bestseller_url', $this->t("For products to display, the Bestseller API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]));
     switch($resource) {
       case 'bestseller':
         return $bestseller_url;
@@ -88,7 +91,7 @@ class Digtap {
         return $bestseller_url . self::DIGTAP_WIDGET_JS_PATH;
 
       case 'premium_content':
-        $error_message = t("For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/hms"]);
+        $error_message = $this->t("For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/hms"]);
         return $this->getSetting('usermanager_url', $error_message) . self::PREMIUM_CONTENT_JS_PATH;
     }
     return '';
@@ -113,11 +116,11 @@ class Digtap {
           }
         }
         else {
-          $this->registerError(t("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module. The price category cannot be changed at this time."), 'error');
+          $this->registerError($this->t("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module. The price category cannot be changed at this time."), 'error');
         }
       }
       else {
-        $this->registerError(t("There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>. The price category cannot be changed at this time.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'error');
+        $this->registerError($this->t("There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>. The price category cannot be changed at this time.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'error');
       }
     }
     return $categories;
