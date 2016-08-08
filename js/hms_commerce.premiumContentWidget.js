@@ -1,4 +1,4 @@
-/**
+/**https://gitlab.valiton.com/hms/premium-content-client-js/tree/develop
  * @file
  * Makes the premium_content field widget dynamic.
  */
@@ -11,8 +11,8 @@
       var fieldIds = settings.hms_commerce.premium_content_field_ids;
 
       $.each(fieldIds, function(index, value) {
-        var checkbox = '#' + value + ' .form-checkbox';
-        var selectList = '#' + value + ' .form-type-select';
+        var checkbox = '.' + value + ' .form-checkbox';
+        var selectList = '.' + value + ' .form-type-select';
         toggleListVisibility(checkbox, selectList);
 
         $(checkbox).change(function () {

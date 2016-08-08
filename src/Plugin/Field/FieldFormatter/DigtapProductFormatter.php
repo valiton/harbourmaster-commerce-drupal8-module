@@ -26,8 +26,8 @@ class DigtapProductFormatter extends FormatterBase {
     $product_ids = [];
 
     // Format field output and collect product ids for the JS script.
-    $field_id = $items->getName();
-    $field_dom_id = $field_id . '-' . self::WIDGET_TYPE;
+    $field_name = $items->getName();
+    $field_dom_id = $field_name . '-' . self::WIDGET_TYPE;
     foreach ($items as $delta => $item) {
       $elements[$delta] = [
         '#type' => 'markup',
@@ -42,7 +42,7 @@ class DigtapProductFormatter extends FormatterBase {
       $elements['#attached']['library'][] = 'hms_commerce/products';
       $elements['#attached']['drupalSettings']['hms_commerce']['bestseller_url'] = $bestseller_url;
       $elements['#attached']['drupalSettings']['hms_commerce']['widget_type'] = self::WIDGET_TYPE;
-      $elements['#attached']['drupalSettings']['hms_commerce']['digtap_product_formatter_settings'][$field_id] = [
+      $elements['#attached']['drupalSettings']['hms_commerce']['digtap_product_formatter_settings'][$field_name] = [
         'field_dom_id' => $field_dom_id,
         'product_ids' => $product_ids,
       ];

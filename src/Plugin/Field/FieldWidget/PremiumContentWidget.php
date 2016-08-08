@@ -43,8 +43,9 @@ class PremiumContentWidget extends WidgetBase {
       ];
 
     // Attach behaviour to display/hide the select field dynamically
+    $field_name = $items->getName();
     $form['#attached']['library'][] = 'hms_commerce/premiumContentWidget';
-    $form['#attached']['drupalSettings']['hms_commerce']['premium_content_field_ids']['field_' . $element['#title']] = 'edit-field-' . $element['#title'] . '-wrapper';
+    $form['#attached']['drupalSettings']['hms_commerce']['premium_content_field_ids'][$field_name] = 'field--name-' . str_replace('_', '-', $field_name);
 
     return $element;
   }
