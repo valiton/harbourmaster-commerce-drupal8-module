@@ -29,6 +29,9 @@ checkbox on the entity edit page and set the price category. The price
 categories are populated from Bestseller. The entity must have a price category
 other than '- None -', otherwise it is not premium.
 
+The price category cannot be changed if there is no connection to Bestseller. In
+that case it is only possible to keep the current category, or unset it.
+
 Premium download
 -----------
 ### Configuration
