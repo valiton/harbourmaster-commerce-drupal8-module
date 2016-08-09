@@ -5,18 +5,53 @@ namespace Drupal\hms_commerce;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
- * PremiumContentManager drupal service class.
+ * PremiumContentManager drupal class.
  */
 class PremiumContentManager {
 
   use StringTranslationTrait;
 
   private $entity;
+
   private $digtapSettings;
+
+  /**
+   * Entity fields that have been marked premium on the premium_content field
+   * settings page.
+   *
+   * @var array
+   */
   private $premiumFields = [];
+
+  /**
+   * Indicates if the entity processed includes premium content.
+   *
+   * @var bool
+   */
   private $premium = FALSE;
+
+  /**
+   * The premium_content field object defining whether and in which way an
+   * entity is premium.
+   *
+   * @var object
+   */
   private $premiumContentField;
+
+  /**
+   * Entitlement group name for this entity. Taken from hms_commerce's
+   * configuration.
+   *
+   * @var string
+   */
   private $entitlementGroupName;
+
+  /**
+   * An ID derived from the entity type name and the entity ID unique to this
+   * Drupal installation and understood by HMS.
+   *
+   * @var string
+   */
   private $hmsContentId;
 
   const ERROR_MESSAGE_WEIGHT = -500;
@@ -35,6 +70,10 @@ class PremiumContentManager {
     }
   }
 
+  /**
+   * Gathers all premium fields from this entity defined by the premium_content
+   * field.
+   */
   private function setPremiumFields() {
     foreach($this->entity->getFields() as $field) {
       if ($field->getFieldDefinition()->getType() == 'premium_content') {
@@ -49,6 +88,13 @@ class PremiumContentManager {
     }
   }
 
+  /**
+   * Encrypts the premium bits of an entity's render array with an encrypter.
+   * Should be called in hook_entity_view_alter.
+   *
+   * @param $build
+   * @param $encrypter
+   */
   public function encryptPremiumFields(&$build, $encrypter) {
     $this->addPremiumContentErrorMessage($build);
     $build['#attached']['library'][] = 'hms_commerce/premiumContent';
@@ -71,7 +117,13 @@ class PremiumContentManager {
     }
   }
 
-  function addPremiumContentErrorMessage(&$build) {
+  /**
+   * Adds a generic error message near the top of the rendered entity.
+   * Message is hidden via CSS and triggered via JS if needed.
+   *
+   * @param $build
+   */
+  private function addPremiumContentErrorMessage(&$build) {
     $message = $this->digtapSettings->getSetting('premium_content_error');
     if (!empty($message)) {
       $build['premium_content_error_message'] = [
@@ -81,6 +133,12 @@ class PremiumContentManager {
     }
   }
 
+  /**
+   * Adds some HMS specific markup to an encrypted field string.
+   *
+   * @param $encrypted_string
+   * @return string
+   */
   private function addPremiumFieldMarkup($encrypted_string) {
     $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
     $output = "<div hms-access='"
@@ -94,6 +152,12 @@ class PremiumContentManager {
     return $output;
   }
 
+  /**
+   * Adds HMS specific markup to the teaser field if such field is defined in
+   * the premium_field's settings.
+   *
+   * @param $build
+   */
   public function addTeaserMarkup(&$build) {
     $teaser_field = $this->premiumContentField->getSetting('teaser_field');
     if (!empty($teaser_field) && isset($build[$teaser_field])) {
@@ -112,10 +176,21 @@ class PremiumContentManager {
     }
   }
 
+  /**
+   * Checks if this entity includes premium content.
+   *
+   * @return bool
+   */
   public function isPremium() {
     return $this->premium;
   }
 
+  /**
+   * Returns an array of this entity's premium fields as defined in the
+   * premium_content field's settings.
+   *
+   * @return array
+   */
   public function getPremiumFields() {
     return $this->premiumFields;
   }

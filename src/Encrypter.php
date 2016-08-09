@@ -3,7 +3,7 @@
 namespace Drupal\hms_commerce;
 
 /**
- * Encrypter drupal service class.
+ * Encrypter drupal class.
  */
 class Encrypter {
 

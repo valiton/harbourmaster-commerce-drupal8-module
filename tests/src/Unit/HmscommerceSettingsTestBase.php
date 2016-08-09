@@ -17,6 +17,7 @@ class HmscommerceSettingsTestBase extends UnitTestCase {
   protected $digtapMock;
   private $container;
   private $configFactory;
+  protected $backupGlobals = FALSE;
 
   /**
    * Used to set a Drupal global. Does not need to be a real URL ATM.

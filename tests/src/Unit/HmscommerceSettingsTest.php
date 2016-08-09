@@ -9,7 +9,6 @@ namespace Drupal\Tests\hms_commerce\Unit;
 class HmscommerceSettingsTest extends HmscommerceSettingsTestBase {
 
   protected $digtap;
-  protected $backupGlobals = FALSE;
 
   /**
    * For tests to pass, this URL must point to a live instance of Bestseller.
