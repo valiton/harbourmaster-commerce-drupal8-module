@@ -5,7 +5,7 @@ namespace Drupal\hms_commerce;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
- * PremiumContentManager drupal class.
+ * PremiumContentManager drupal service class.
  */
 class PremiumContentManager {
 
@@ -14,6 +14,13 @@ class PremiumContentManager {
   private $entity;
 
   private $digtapSettings;
+
+  /**
+   * Encrypter object.
+   *
+   * @var object
+   */
+  private $encrypter;
 
   /**
    * Entity fields that have been marked premium on the premium_content field
@@ -59,15 +66,27 @@ class PremiumContentManager {
   /**
    * PremiumContentManager constructor.
    */
-  function __construct($entity, $digtap_settings) {
-    $this->entity = $entity;
-    $this->digtapSettings = $digtap_settings;
+  function __construct($digtap_config, $encrypter) {
+    $this->digtapSettings = $digtap_config;
+    $this->encrypter = $encrypter;
     $this->entitlementGroupName = $this->digtapSettings->getSetting('entitlement_group_name');
+  }
+
+  /**
+   * Sets the entity object to be processed.
+   *
+   * @param $entity
+   *
+   * @return $this
+   */
+  public function setEntity($entity) {
+    $this->entity = $entity;
     $this->hmsContentId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
     $this->setPremiumFields();
     if (!empty($this->getPremiumFields())) {
       $this->premium = TRUE;
     }
+    return $this;
   }
 
   /**
@@ -93,9 +112,10 @@ class PremiumContentManager {
    * Should be called in hook_entity_view_alter.
    *
    * @param $build
-   * @param $encrypter
+   *
+   * @return $this
    */
-  public function encryptPremiumFields(&$build, $encrypter) {
+  public function encryptPremiumFields(&$build) {
     $this->addPremiumContentErrorMessage($build);
     $build['#attached']['library'][] = 'hms_commerce/premiumContent';
 
@@ -103,7 +123,7 @@ class PremiumContentManager {
       if (isset($build[$premium_field_name])) {
         $rendered_field = render($build[$premium_field_name]);
         if (!empty($rendered_field)) {
-          $encrypted_content = $encrypter
+          $encrypted_content = $this->encrypter
             ->setHmsContentId($this->hmsContentId)
             ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'))
             ->encryptContent($rendered_field);
@@ -115,6 +135,7 @@ class PremiumContentManager {
         }
       }
     }
+    return $this;
   }
 
   /**
@@ -137,6 +158,7 @@ class PremiumContentManager {
    * Adds some HMS specific markup to an encrypted field string.
    *
    * @param $encrypted_string
+   *
    * @return string
    */
   private function addPremiumFieldMarkup($encrypted_string) {
@@ -157,6 +179,8 @@ class PremiumContentManager {
    * the premium_field's settings.
    *
    * @param $build
+   *
+   * @return $this
    */
   public function addTeaserMarkup(&$build) {
     $teaser_field = $this->premiumContentField->getSetting('teaser_field');
@@ -174,6 +198,7 @@ class PremiumContentManager {
       ];
       $build[$teaser_field] = $rendered_teaser;
     }
+    return $this;
   }
 
   /**

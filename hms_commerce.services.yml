@@ -5,3 +5,7 @@ services:
 
   hms_commerce.encrypter:
     class: Drupal\hms_commerce\Encrypter
+
+  hms_commerce.premium_content_manager:
+    class: Drupal\hms_commerce\PremiumContentManager
+    arguments: ['@hms_commerce.settings', '@hms_commerce.encrypter']

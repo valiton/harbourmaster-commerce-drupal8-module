@@ -5,8 +5,6 @@
  * Module file containing HMS Commerce hooks.
  */
 
-use Drupal\hms_commerce\PremiumContentManager;
-
 /**
  * Implements hook_library_info_build.
  *
@@ -33,12 +31,18 @@ function hms_commerce_library_info_build() {
 }
 
 /**
- * Implements hook_entity_view_alter.
+ * Implements hook_entity_view_alter
+ *
+ * @param array $build
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ * @param \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display
  */
 function hms_commerce_entity_view_alter(array &$build, Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display) {
-  $manager = new PremiumContentManager($entity, \Drupal::service('hms_commerce.settings'));
+  $manager = \Drupal::service('hms_commerce.premium_content_manager')
+    ->setEntity($entity);
+
   if ($manager->isPremium()) {
-    $manager->encryptPremiumFields($build, \Drupal::service('hms_commerce.encrypter'));
-    $manager->addTeaserMarkup($build);
+    $manager->encryptPremiumFields($build)
+      ->addTeaserMarkup($build);
   }
 }
