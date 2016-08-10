@@ -6,7 +6,7 @@ namespace Drupal\Tests\hms_commerce\Unit;
  * @coversDefaultClass \Drupal\hms_commerce\Digtap
  * @group hms_commerce
  */
-class HmscommerceSettingsTest extends HmscommerceSettingsTestBase {
+class DigtapTest extends DigtapTestBase {
 
   protected $digtap;
 
@@ -27,7 +27,7 @@ class HmscommerceSettingsTest extends HmscommerceSettingsTestBase {
    */
   public function testGetSetting() {
     $this->digtapMock->expects($this->never())->method('registerError');
-    $this->assertEquals($this->digtap->getSetting('bestseller_url'), $this->config['bestseller_url']);
+    $this->assertEquals(\Drupal::service('hms_commerce.settings')->getSetting('bestseller_url'), $this->config['bestseller_url']);
   }
 
   /**
@@ -37,7 +37,7 @@ class HmscommerceSettingsTest extends HmscommerceSettingsTestBase {
     $this->config['bestseller_url'] = '';
     $this->mockDigtapService();
     $this->digtapMock->expects($this->once())->method('registerError');
-    $this->assertEmpty($this->digtap->getSetting('bestseller_url', 'some error message'));
+    $this->assertEmpty(\Drupal::service('hms_commerce.settings')->getSetting('bestseller_url', 'some error message'));
   }
 
   /**
@@ -45,7 +45,7 @@ class HmscommerceSettingsTest extends HmscommerceSettingsTestBase {
    */
   public function testGetSettingWhenSettingNotExists() {
     $this->digtapMock->expects($this->once())->method('registerError');
-    $this->assertEmpty($this->digtap->getSetting('non-existing setting', 'some error message'));
+    $this->assertEmpty(\Drupal::service('hms_commerce.settings')->getSetting('non-existing setting', 'some error message'));
   }
 
   /**
@@ -55,7 +55,7 @@ class HmscommerceSettingsTest extends HmscommerceSettingsTestBase {
     $this->config['bestseller_url'] = self::CURRENT_BESTSELLER_API_URL;
     $this->mockDigtapService();
     $this->digtapMock->expects($this->never())->method('registerError');
-    $this->assertNotEmpty($this->digtap->getResourceUrl('bestseller'));
+    $this->assertNotEmpty(\Drupal::service('hms_commerce.settings')->getResourceUrl('bestseller'));
   }
 
   /**
@@ -65,6 +65,15 @@ class HmscommerceSettingsTest extends HmscommerceSettingsTestBase {
     $this->config['bestseller_url'] = self::CURRENT_BESTSELLER_API_URL;
     $this->mockDigtapService();
     $this->digtapMock->expects($this->never())->method('registerError');
-    $this->assertNotEmpty($this->digtap->getPriceCategories());
+    $this->assertNotEmpty(\Drupal::service('hms_commerce.settings')->getPriceCategories());
+  }
+
+  /**
+   * Test
+   */
+  public function testPremium() {
+    $this->config['bestseller_url'] = self::CURRENT_BESTSELLER_API_URL;
+    $this->mockPremiumContentManagerService();
+    $this->assertFalse(\Drupal::service('hms_commerce.premium_content_manager')->isPremium());
   }
 }

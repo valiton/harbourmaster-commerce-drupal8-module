@@ -10,14 +10,15 @@ use Drupal\Core\DependencyInjection\ContainerBuilder;
  *
  * @group hms_commerce
  */
-class HmscommerceSettingsTestBase extends UnitTestCase {
+class DigtapTestBase extends UnitTestCase {
 
   protected $config;
-  protected $digtap;
-  protected $digtapMock;
-  private $container;
-  private $configFactory;
+  protected $container;
   protected $backupGlobals = FALSE;
+
+  protected $digtapMock;
+  protected $premiumContentManagerMock;
+  protected $encrypterMock;
 
   /**
    * Used to set a Drupal global. Does not need to be a real URL ATM.
@@ -54,21 +55,36 @@ class HmscommerceSettingsTestBase extends UnitTestCase {
    * Mock Drupal Digtap service.
    */
   protected function mockDigtapService() {
-    $this->configFactory = $this->getConfigFactoryStub(['hms_commerce.settings' => $this->config]);
+    $configFactory = $this->getConfigFactoryStub(['hms_commerce.settings' => $this->config]);
     $this->digtapMock = $this->getMockBuilder('\Drupal\hms_commerce\Digtap')
-      ->setConstructorArgs([$this->configFactory])
+      ->setConstructorArgs([$configFactory])
       ->setMethods(['registerError'])
       ->getMock();
-    $this->refreshDigtapService();
+    $this->container->set('hms_commerce.settings', $this->digtapMock);
+    \Drupal::setContainer($this->container);
   }
 
   /**
-   * Adds the Digtap class to the Drupal service container so it can be used
-   * as a Drupal service.
+   * Mock Drupal PremiumContentManager service.
    */
-  protected function refreshDigtapService() {
-    $this->container->set('hms_commerce.settings', $this->digtapMock);
+  protected function mockPremiumContentManagerService() {
+    $this->mockDigtapService();
+    $this->mockEncrypterService();
+    $this->premiumContentManagerMock = $this->getMockBuilder('\Drupal\hms_commerce\PremiumContentManager')
+      ->setConstructorArgs([\Drupal::service('hms_commerce.settings'), \Drupal::service('hms_commerce.encrypter')])
+      ->setMethods(NULL)
+      ->getMock();
+    $this->container->set('hms_commerce.premium_content_manager', $this->premiumContentManagerMock);
     \Drupal::setContainer($this->container);
-    $this->digtap = \Drupal::service('hms_commerce.settings');
+  }
+
+  /**
+   * Mock Drupal PremiumContentManager service.
+   */
+  protected function mockEncrypterService() {
+    $this->encrypterMock = $this->getMockBuilder('\Drupal\hms_commerce\Encrypter')
+      ->getMock();
+    $this->container->set('hms_commerce.encrypter', $this->encrypterMock);
+    \Drupal::setContainer($this->container);
   }
 }
