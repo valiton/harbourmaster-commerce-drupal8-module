@@ -5,6 +5,8 @@ namespace Drupal\Tests\hms_commerce\Unit;
 /**
  * @coversDefaultClass \Drupal\hms_commerce\PremiumContentManager
  * @group hms_commerce
+ *
+ * @todo Add tests
  */
 class PremiumContentManagerTest extends DigtapTestBase {
 
