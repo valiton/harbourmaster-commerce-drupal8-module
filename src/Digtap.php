@@ -99,7 +99,7 @@ class Digtap {
 
   /**
    * @return array
-   *  Array with category IDs as indexes and prices as values.
+   *  Array with category IDs as indexes and price categories as values.
    *
    * @todo Either use curl or implement hook_requirements to check for allow_url_fopen.
    * @todo Adjust method to API which is to change.
@@ -110,9 +110,9 @@ class Digtap {
     if (!empty($url)) {
       if (($json = @file_get_contents($url)) !== FALSE) {
         $response = json_decode($json);
-        if (isset($response->products)) {
-          foreach($response->products as $category) {
-            $categories[$category->product_id] = $category->product;
+        if (isset($response->_embedded->products)) {
+          foreach($response->_embedded->products as $product) {
+            $categories[$product->product_id] = $product->product;
           }
         }
         else {
