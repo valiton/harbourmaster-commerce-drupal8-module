@@ -175,28 +175,32 @@ class PremiumContentManager {
   }
 
   /**
-   * Adds HMS specific markup to the teaser field if such field is defined in
-   * the premium_field's settings.
+   * Adds HMS specific markup to teaser fields if such fields are defined in the
+   * premium_field's settings.
    *
    * @param $build
    *
    * @return $this
    */
   public function addTeaserMarkup(&$build) {
-    $teaser_field = $this->premiumContentField->getSetting('teaser_field');
-    if (!empty($teaser_field) && isset($build[$teaser_field])) {
-      $rendered_field = render($build[$teaser_field]);
-      $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
-      $rendered_teaser = [
-        '#markup' => "<div hms-access='NOT("
-          . $entitlement_group_name
-          . $this->hmsContentId
-          . ")'>"
-          . $rendered_field
-          . "</div>",
-        '#weight' => $build[$teaser_field]['#weight'],
-      ];
-      $build[$teaser_field] = $rendered_teaser;
+    $teaser_fields = array_filter(
+      $this->premiumContentField->getSetting('teaser_fields'), function($i) {return !empty($i);}
+    );
+    $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
+    foreach($teaser_fields as $teaser_field_name) {
+      if (isset($build[$teaser_field_name])) {
+        $rendered_field = render($build[$teaser_field_name]);
+        $rendered_teaser = [
+          '#markup' => "<div hms-access='NOT("
+            . $entitlement_group_name
+            . $this->hmsContentId
+            . ")'>"
+            . $rendered_field
+            . "</div>",
+          '#weight' => $build[$teaser_field_name]['#weight'],
+        ];
+        $build[$teaser_field_name] = $rendered_teaser;
+      }
     }
     return $this;
   }

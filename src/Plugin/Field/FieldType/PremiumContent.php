@@ -22,8 +22,8 @@ class PremiumContent extends DigtapIdField {
   public static function defaultFieldSettings() {
     return [
       'premium_fields' => [],
-      'teaser_field' => [],
-    ];/* + parent::defaultFieldSettings();*/
+      'teaser_fields' => [],
+    ];
   }
 
   /**
@@ -60,13 +60,14 @@ class PremiumContent extends DigtapIdField {
     ];
 
     // Teaser field settings
-    $element['teaser_field'] = [
-      '#type' => 'radios',
-      '#title' => $this->t('Teaser field'),
-      '#description' => $this->t('Set a field to act as a teaser for the content from the premium fields.'),
-      '#default_value' => $this->getSetting('teaser_field'),
-      '#options' => [0 => t('(No teaser)')] + $options,
+    $element['teaser_fields'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Teaser fields'),
+      '#description' => $this->t('Set fields to act as teasers for the content from the premium fields.'),
+      '#default_value' => $this->getSetting('teaser_fields'),
+      '#options' => $options,
     ];
+
     return $element;
   }
 }
