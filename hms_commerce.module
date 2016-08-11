@@ -53,3 +53,11 @@ function hms_commerce_entity_view_alter(array &$build, Drupal\Core\Entity\Entity
       ->addTeaserMarkup($build);
   }
 }
+
+//function hms_commerce_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+//  dpm($form_id);
+//}
+
+//function hms_commerce_form_field_storage_config_edit_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+//  dpm($form);
+//}

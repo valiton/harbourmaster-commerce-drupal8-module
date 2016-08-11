@@ -28,24 +28,33 @@ class DigtapProductWidget extends WidgetBase {
     foreach($items as $item) {
       $values[] = $item->value;
     }
+
     $field_name = $items->getName();
     $dom_container_id = 'digtap-product-widget-' . $field_name;
     $dom_input_id = $dom_container_id . '-input';
+
     $hidden_field = [
       '#type' => 'hidden',
+
+      // Put all values into one single hidden field.
       '#default_value' => implode(',', $values),
-      '#attributes' => ['id' => [$dom_input_id]], // ID for digtap widget to be able to target this hidden field.
-      '#suffix' => "<div id='$dom_container_id'></div>", // Empty container for the digtap widget to use it to display products.
+
+      // ID for digtap widget to be able to target this hidden field.
+      '#attributes' => ['id' => [$dom_input_id]],
+
+      // Empty container for the digtap widget to use it to display products.
+      '#suffix' => "<div id='$dom_container_id'></div>",
     ];
 
-    // Attach behaviour to display/hide the select field dynamically
-    // Attach JS and its settings to any page displaying this field.
+    // Attach JS and its settings to this field widget.
     $bestseller_url = \Drupal::service('hms_commerce.settings')->getResourceUrl('bestseller');
     if (!empty($bestseller_url)) {
       $form['#attached']['library'][] = 'hms_commerce/digtapProductWidget';
       $form['#attached']['drupalSettings']['hms_commerce']['bestseller_url'] = $bestseller_url;
-      $form['#attached']['drupalSettings']['hms_commerce']['digtap_product_widget_settings'][$field_name]['input_id'] = $dom_input_id;
-      $form['#attached']['drupalSettings']['hms_commerce']['digtap_product_widget_settings'][$field_name]['container_id'] = $dom_container_id;
+      $form['#attached']['drupalSettings']['hms_commerce']['digtap_product_widget_settings'][$field_name] = [
+        'input_id' => $dom_input_id,
+        'container_id' => $dom_container_id,
+      ];
     }
     return [$hidden_field];
   }

@@ -6,6 +6,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
 abstract class DigtapIdField extends NumericItemBase {
+
   const MAX_LENGTH = 9;
 
   /**
