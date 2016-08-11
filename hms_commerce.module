@@ -14,10 +14,17 @@ function hms_commerce_library_info_build() {
   $libraries = [];
   $settings = \Drupal::service('hms_commerce.settings');
 
-  // Add digtap widget js.
-  $widget_js = $settings->getResourceUrl('digtap_widgets');
-  if (!empty($widget_js)) {
-    $libraries['products']['js'][$widget_js] = [
+  // Add digtap frontend widget js.
+  $frontend_widget_js = $settings->getResourceUrl('digtap_frontend_widget');
+  if (!empty($frontend_widget_js)) {
+    $libraries['products']['js'][$frontend_widget_js] = [
+      'type' => 'external', 'minified' => TRUE];
+  }
+
+  // Add digtap backend widget js.
+  $backend_widget_js = $settings->getResourceUrl('digtap_backend_widget');
+  if (!empty($backend_widget_js)) {
+    $libraries['digtapProductWidget']['js'][$backend_widget_js] = [
       'type' => 'external', 'minified' => TRUE];
   }
 

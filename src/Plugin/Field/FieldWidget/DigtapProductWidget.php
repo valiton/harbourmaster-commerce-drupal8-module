@@ -29,13 +29,27 @@ class DigtapProductWidget extends WidgetBase {
       $values[] = $item->value;
     }
 
+    $field_name = $items->getName();
+    $dom_container_id = 'digtap-product-widget-' . $field_name;
     $hidden_field = [
 //      '#type' => 'hidden', //todo: uncomment
       '#type' => 'textfield', //todo: remove
 
       '#default_value' => implode(',', $values),
-      '#attributes' => ['class' => ['digtap-product-widget']],
+//      '#attributes' => ['class' => ['digtap-product-widget']],
+      '#prefix' => "<div id='" . $dom_container_id ."'>",
+      '#suffix' => "</div>",
     ];
+
+    // Attach behaviour to display/hide the select field dynamically
+    // Attach JS and its settings to any page displaying this field.
+    $bestseller_url = \Drupal::service('hms_commerce.settings')->getResourceUrl('bestseller');
+    if (!empty($bestseller_url)) {
+      $form['#attached']['library'][] = 'hms_commerce/digtapProductWidget';
+      $form['#attached']['drupalSettings']['hms_commerce']['bestseller_url'] = $bestseller_url;
+      $form['#attached']['drupalSettings']['hms_commerce']['digtap_product_widget_settings'][$field_name]['input_id'] = 'edit-' . str_replace('_', '-', $field_name) . '-0'; //todo: test what happens when product field is set to allow only one value
+      $form['#attached']['drupalSettings']['hms_commerce']['digtap_product_widget_settings'][$field_name]['container_id'] = $dom_container_id;
+    }
     return [$hidden_field];
   }
 

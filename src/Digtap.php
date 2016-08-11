@@ -16,7 +16,8 @@ class Digtap {
   private $config;
 
   const PRICE_CATEGORY_API_PATH = '/home/de/api/v1/products';
-  const DIGTAP_WIDGET_JS_PATH = '/bundles/digtapecom/widgets/frontend/stage/digtap-widget-frontend.min.js';
+  const DIGTAP_WIDGET_FRONTEND_JS_PATH = '/bundles/digtapecom/widgets/frontend/stage/digtap-widget-frontend.min.js';
+  const DIGTAP_WIDGET_BACKEND_JS_PATH = '/bundles/digtapecom/widgets/frontend/stage/digtap-widget-backend.min.js';
   const PREMIUM_CONTENT_JS_PATH = '/usermanager/prod/js/premium-content.min.js';
 
   /**
@@ -87,8 +88,11 @@ class Digtap {
       case 'price_category':
         return $bestseller_url . self::PRICE_CATEGORY_API_PATH;
 
-      case 'digtap_widgets':
-        return $bestseller_url . self::DIGTAP_WIDGET_JS_PATH;
+      case 'digtap_frontend_widget':
+        return $bestseller_url . self::DIGTAP_WIDGET_FRONTEND_JS_PATH;
+
+      case 'digtap_backend_widget':
+        return $bestseller_url . self:: DIGTAP_WIDGET_BACKEND_JS_PATH;
 
       case 'premium_content':
         $error_message = $this->t("For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/hms"]);

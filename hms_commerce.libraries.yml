@@ -30,5 +30,6 @@ digtapProductWidget:
     js/hms_commerce.digtapProductWidget.js: {}
   dependencies:
     - core/jquery
+    - core/drupalSettings
 
 # Several resources are not included as they attach dynamically through hook_library_info_build.
