@@ -17,7 +17,7 @@ class Digtap {
 
   const PRICE_CATEGORY_API_PATH = '/home/de/api/v1/products';
   const DIGTAP_WIDGET_FRONTEND_JS_PATH = '/bundles/digtapecom/widgets/frontend/stage/digtap-widget-frontend.min.js';
-  const DIGTAP_WIDGET_BACKEND_JS_PATH = '/bundles/digtapecom/widgets/frontend/stage/digtap-widget-backend.min.js';
+  const DIGTAP_WIDGET_BACKEND_JS_PATH = '/bundles/digtapecom/widgets/backend/stage/digtap-widget-backend.min.js';
   const PREMIUM_CONTENT_JS_PATH = '/usermanager/prod/js/premium-content.min.js';
 
   /**
