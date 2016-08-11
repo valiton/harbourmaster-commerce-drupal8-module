@@ -18,7 +18,7 @@ Premium content
     field to it.
   * On the field settings page other fields added to that entity type can be
     marked as premium fields and will be encrypted on entity view pages.
-  * The field settings page also allows to mark any field as teaser. This field
+  * The field settings page also allows to mark fields as teasers. These fields
     will be shown on entity view pages instead of the content rendered by
     premium fields for users not entitled to view the premium content.
 

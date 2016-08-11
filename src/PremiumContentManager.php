@@ -31,6 +31,14 @@ class PremiumContentManager {
   private $premiumFields = [];
 
   /**
+   * Entity fields that have been marked as teasers on the premium_content field
+   * settings page.
+   *
+   * @var array
+   */
+  private $teaserFields = [];
+
+  /**
    * Indicates if the entity processed includes premium content.
    *
    * @var bool
@@ -81,12 +89,35 @@ class PremiumContentManager {
    */
   public function setEntity($entity) {
     $this->entity = $entity;
-    $this->hmsContentId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
-    $this->setPremiumFields();
-    if (!empty($this->getPremiumFields())) {
-      $this->premium = TRUE;
+    $this->setHmsContentId();
+    if ($this->setPremiumContentField()) {
+      $this->setPremiumFields();
+      $this->setTeaserFields();
     }
     return $this;
+  }
+
+  /**
+   * Sets the HMS content id from entity data.
+   */
+  private function setHmsContentId() {
+    $this->hmsContentId = $this->entity->getEntityTypeId() . "Id" . $this->entity->id();
+  }
+
+  /**
+   * Looks for the premium content field on the entity.
+   *
+   * @todo Only works with the first premium content field found. Decide whether alter this method or disallow multiple premium content fields.
+   */
+  private function setPremiumContentField() {
+    foreach($this->entity->getFields() as $field) {
+      if ($field->getFieldDefinition()->getType() == 'premium_content') {
+        $this->premiumContentField = $field;
+        $this->premium = !$this->premiumContentField->isEmpty();
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**
@@ -94,17 +125,19 @@ class PremiumContentManager {
    * field.
    */
   private function setPremiumFields() {
-    foreach($this->entity->getFields() as $field) {
-      if ($field->getFieldDefinition()->getType() == 'premium_content') {
-        $this->premiumContentField = $field;
-        if (!$this->premiumContentField->isEmpty()) {
-          $this->premiumFields = array_filter(
-            $this->premiumContentField->getSetting('premium_fields'), function($i) {return !empty($i);}
-          );
-        }
-        break;
-      }
-    }
+    $this->premiumFields = array_filter(
+      $this->premiumContentField->getSetting('premium_fields'), function($i) {return !empty($i);}
+    );
+  }
+
+  /**
+   * Gathers all teaser fields from this entity defined by the premium_content
+   * field.
+   */
+  private function setTeaserFields() {
+    $this->teaserFields = array_filter(
+      $this->premiumContentField->getSetting('teaser_fields'), function($i) {return !empty($i);}
+    );
   }
 
   /**
@@ -118,24 +151,38 @@ class PremiumContentManager {
   public function encryptPremiumFields(&$build) {
     $this->addPremiumContentErrorMessage($build);
     $build['#attached']['library'][] = 'hms_commerce/premiumContent';
-
+    $this->encrypter
+      ->setHmsContentId($this->hmsContentId)
+      ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'));
     foreach($this->premiumFields as $premium_field_name) {
-      if (isset($build[$premium_field_name])) {
-        $rendered_field = render($build[$premium_field_name]);
-        if (!empty($rendered_field)) {
-          $encrypted_content = $this->encrypter
-            ->setHmsContentId($this->hmsContentId)
-            ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'))
-            ->encryptContent($rendered_field);
-          $encrypted_field = [
-            '#markup' => $this->addPremiumFieldMarkup($encrypted_content),
-            '#weight' => $build[$premium_field_name]['#weight'],
-          ];
-          $build[$premium_field_name] = $encrypted_field;
-        }
-      }
+      $this->encryptField($premium_field_name, $build);
     }
     return $this;
+  }
+
+  /**
+   * Encrypts a field.
+   *
+   * @param $build
+   * @param $field_name
+   *
+   * @return bool
+   *  FALSE if field not in $build array, otherwise TRUE.
+   */
+  private function encryptField($field_name, &$build) {
+    if (isset($build[$field_name])) {
+      $rendered_field = render($build[$field_name]);
+      if (!empty($rendered_field)) {
+        $encrypted_content = $this->encrypter->encryptContent($rendered_field);
+        $encrypted_field = [
+          '#markup' => $this->addPremiumFieldMarkup($encrypted_content),
+          '#weight' => $build[$field_name]['#weight'],
+        ];
+        $build[$field_name] = $encrypted_field;
+      }
+      return TRUE;
+    }
+    return FALSE;
   }
 
   /**
@@ -183,11 +230,8 @@ class PremiumContentManager {
    * @return $this
    */
   public function addTeaserMarkup(&$build) {
-    $teaser_fields = array_filter(
-      $this->premiumContentField->getSetting('teaser_fields'), function($i) {return !empty($i);}
-    );
     $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
-    foreach($teaser_fields as $teaser_field_name) {
+    foreach($this->teaserFields as $teaser_field_name) {
       if (isset($build[$teaser_field_name])) {
         $rendered_field = render($build[$teaser_field_name]);
         $rendered_teaser = [
@@ -210,7 +254,7 @@ class PremiumContentManager {
    *
    * @return bool
    */
-  public function isPremium() {
+  public function entityIsPremium() {
     return $this->premium;
   }
 
@@ -222,5 +266,15 @@ class PremiumContentManager {
    */
   public function getPremiumFields() {
     return $this->premiumFields;
+  }
+
+  /**
+   * Returns an array of this entity's teaser fields as defined in the
+   * premium_content field's settings.
+   *
+   * @return array
+   */
+  public function getTeaserFields() {
+    return $this->teaserFields;
   }
 }
