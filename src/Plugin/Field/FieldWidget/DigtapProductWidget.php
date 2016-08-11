@@ -28,17 +28,14 @@ class DigtapProductWidget extends WidgetBase {
     foreach($items as $item) {
       $values[] = $item->value;
     }
-
     $field_name = $items->getName();
     $dom_container_id = 'digtap-product-widget-' . $field_name;
+    $dom_input_id = $dom_container_id . '-input';
     $hidden_field = [
-//      '#type' => 'hidden', //todo: uncomment
-      '#type' => 'textfield', //todo: remove
-
+      '#type' => 'hidden',
       '#default_value' => implode(',', $values),
-//      '#attributes' => ['class' => ['digtap-product-widget']],
-      '#prefix' => "<div id='" . $dom_container_id ."'>",
-      '#suffix' => "</div>",
+      '#attributes' => ['id' => [$dom_input_id]], // ID for digtap widget to be able to target this hidden field.
+      '#suffix' => "<div id='$dom_container_id'></div>", // Empty container for the digtap widget to use it to display products.
     ];
 
     // Attach behaviour to display/hide the select field dynamically
@@ -47,7 +44,7 @@ class DigtapProductWidget extends WidgetBase {
     if (!empty($bestseller_url)) {
       $form['#attached']['library'][] = 'hms_commerce/digtapProductWidget';
       $form['#attached']['drupalSettings']['hms_commerce']['bestseller_url'] = $bestseller_url;
-      $form['#attached']['drupalSettings']['hms_commerce']['digtap_product_widget_settings'][$field_name]['input_id'] = 'edit-' . str_replace('_', '-', $field_name) . '-0'; //todo: test what happens when product field is set to allow only one value
+      $form['#attached']['drupalSettings']['hms_commerce']['digtap_product_widget_settings'][$field_name]['input_id'] = $dom_input_id;
       $form['#attached']['drupalSettings']['hms_commerce']['digtap_product_widget_settings'][$field_name]['container_id'] = $dom_container_id;
     }
     return [$hidden_field];

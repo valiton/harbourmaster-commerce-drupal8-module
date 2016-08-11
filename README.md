@@ -41,4 +41,4 @@ Premium download
 ### Usage
 
 For products to display on an entity view page, populate the 'Bestseller
-product' field with products on the entity edit page (not yet implemented).
+product' field with products on the entity edit page.
