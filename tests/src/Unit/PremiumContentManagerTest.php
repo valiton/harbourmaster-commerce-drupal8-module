@@ -22,6 +22,6 @@ class PremiumContentManagerTest extends DigtapTestBase {
    */
   public function testIsPremiumExample() {
     $this->mockPremiumContentManagerService();
-    $this->assertFalse(\Drupal::service('hms_commerce.premium_content_manager')->isPremium());
+    $this->assertFalse(\Drupal::service('hms_commerce.premium_content_manager')->entityIsPremium());
   }
 }

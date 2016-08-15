@@ -8,8 +8,6 @@ namespace Drupal\Tests\hms_commerce\Unit;
  */
 class DigtapTest extends DigtapTestBase {
 
-  protected $digtap;
-
   /**
    * For tests to pass, this URL must point to a live instance of Bestseller.
    */
@@ -66,14 +64,5 @@ class DigtapTest extends DigtapTestBase {
     $this->mockDigtapService();
     $this->digtapMock->expects($this->never())->method('registerError');
     $this->assertNotEmpty(\Drupal::service('hms_commerce.settings')->getPriceCategories());
-  }
-
-  /**
-   * Test
-   */
-  public function testPremium() {
-    $this->config['bestseller_url'] = self::CURRENT_BESTSELLER_API_URL;
-    $this->mockPremiumContentManagerService();
-    $this->assertFalse(\Drupal::service('hms_commerce.premium_content_manager')->isPremium());
   }
 }
