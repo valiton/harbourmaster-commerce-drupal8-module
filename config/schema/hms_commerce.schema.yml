@@ -13,3 +13,18 @@ hms_commerce.settings:
     premium_content_error:
       label: 'Premium content error message'
       type: string
+
+field.field_settings.premium_content:
+  type: mapping
+  label: 'Premium content field settings.'
+  mapping:
+    premium_fields:
+      type: sequence
+      label: 'Premium fields'
+      sequence:
+        type: string
+    teaser_fields:
+      type: sequence
+      label: 'Teaser fields'
+      sequence:
+        type: string
