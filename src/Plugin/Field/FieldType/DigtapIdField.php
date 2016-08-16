@@ -12,6 +12,13 @@ abstract class DigtapIdField extends NumericItemBase {
   /**
    * {@inheritdoc}
    */
+  public static function defaultFieldSettings() {
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     return [];
   }
