@@ -1,6 +1,7 @@
 /**
  * @file
- * Makes the digtap_product field formatter display digtap widgets.
+ * Makes the digtap_product and premium_content field formatters display digtap
+ * widgets.
  */
 (function($) {
 
@@ -9,31 +10,37 @@
   Drupal.behaviors.hms_commerceProducts = {
     attach: function(context, settings) {
 
-      // Configure digtap widgets.
+      // Globally configure digtap widgets.
       var bestsellerUrl = settings.hms_commerce.bestseller_url;
       window._digtapq = window._digtapq || [];
       window._digtapq.push(['configure', {
         api: bestsellerUrl
       }]);
 
-      // Gather settings applying to all field formatters on the page.
-      var widgetType = settings.hms_commerce.widget_type;
-      var formatterSettings = settings.hms_commerce.digtap_product_formatter_settings;
+      // Gather settings applying to all Digtap field formatters on the page.
+      var formatterSettings = settings.hms_commerce.formatter_settings;
 
-      $.each(formatterSettings, function(index, value) {
-        // Gather settings applying to this specific formatter.
-        var productIds = value.product_ids;
-        var fieldDomId = value.field_dom_id;
+      // Looping through all field formatter types on the page.
+      $.each(formatterSettings, function(widgetType, widgetSettings) {
 
-        // Configure digtap widget for each product within this formatter.
-        $.each(productIds, function(index, value) {
-          window._digtapq.push(['render', {
-            widget: widgetType,
-            selector: '#' + fieldDomId + '-' + index,
-            options: {
-              product_id: Number(value)
-            }
-          }]);
+        // Looping through all field formatters of this type.
+        $.each(widgetSettings, function(fieldName, fieldSettings) {
+
+          var productIds = fieldSettings.product_ids;
+          var fieldDomId = fieldSettings.field_dom_id;
+
+          // Looping through all products within this formatter.
+          $.each(productIds, function(productIdIndex, productId) {
+
+            // Configure digtap widget for each product.
+            window._digtapq.push(['render', {
+              widget: widgetType,
+              selector: '#' + fieldDomId + '-' + productIdIndex,
+              options: {
+                product_id: Number(productId)
+              }
+            }]);
+          });
         });
       });
     }
