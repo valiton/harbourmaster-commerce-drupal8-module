@@ -6,10 +6,8 @@ use Drupal\simpletest\WebTestBase;
 
 /**
  * Test Base for hms_commerce field functional integration.
- *
- * @group hms_commerce
  */
-class DigtapFieldTestBase extends WebTestBase {
+abstract class DigtapFieldTestBase extends WebTestBase {
 
   /**
    * Modules to enable.

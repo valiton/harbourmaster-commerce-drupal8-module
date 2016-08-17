@@ -7,10 +7,8 @@ use Drupal\Core\DependencyInjection\ContainerBuilder;
 
 /**
  * Tests hms_commerce settings.
- *
- * @group hms_commerce
  */
-class DigtapTestBase extends UnitTestCase {
+abstract class DigtapTestBase extends UnitTestCase {
 
   protected $config;
   protected $container;
