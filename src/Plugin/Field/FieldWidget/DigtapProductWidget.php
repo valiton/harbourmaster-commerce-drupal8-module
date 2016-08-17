@@ -30,10 +30,16 @@ class DigtapProductWidget extends WidgetBase {
     }
 
     $field_name = $items->getName();
+    $field_label = $items->getFieldDefinition()->getLabel();
     $dom_container_id = 'digtap-product-widget-' . $field_name;
     $dom_input_id = $dom_container_id . '-input';
 
-    $hidden_field = [
+    $element['products'] = array(
+      '#type' => 'fieldset',
+      '#title' => $this->t($field_label),
+    );
+
+    $element['products']['product_store'] = [
       '#type' => 'hidden',
 
       // Put all values into one single hidden field.
@@ -41,9 +47,13 @@ class DigtapProductWidget extends WidgetBase {
 
       // ID for digtap widget to be able to target this hidden field.
       '#attributes' => ['id' => [$dom_input_id]],
+    ];
+
+    $element['products']['product_container'] = [
+      '#type' => 'markup',
 
       // Empty container for the digtap widget to use it to display products.
-      '#suffix' => "<div id='$dom_container_id'></div>",
+      '#markup' => "<div id='$dom_container_id'></div>",
     ];
 
     // Attach JS and its settings to this field widget.
@@ -56,7 +66,7 @@ class DigtapProductWidget extends WidgetBase {
         'container_id' => $dom_container_id,
       ];
     }
-    return [$hidden_field];
+    return [$element];
   }
 
   /**

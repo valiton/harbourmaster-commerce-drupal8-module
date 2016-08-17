@@ -25,7 +25,7 @@ class PremiumContentWidget extends WidgetBase {
 
     $element['premium'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Premium content'),
+      '#title' => $this->t($items->getFieldDefinition()->getLabel()),
       '#default_value' => !is_null($default_value),
       '#element_validate' => [[$this, 'validatePremium']],
     ];
@@ -36,7 +36,8 @@ class PremiumContentWidget extends WidgetBase {
 
       // Make sure the dropdown shows option '- Current -' when there is no connection to Bestseller API
       // or if the category ID vanished from it. This is to make sure that the value is kept after clicking 'Save'.
-      '#options' => (!isset($price_categories[$default_value]) ? [$default_value => $this->t('- Current (connection error) -')] : []) + $price_categories,
+      '#options' => (!isset($price_categories[$default_value]) ? [$default_value => $this->t('- Current (connection error) -')] : [])
+        + $price_categories,
 
       '#empty_value' => '',
       '#default_value' => $default_value,
@@ -47,7 +48,8 @@ class PremiumContentWidget extends WidgetBase {
     // Attach behaviour to display/hide the select field dynamically
     $field_name = $items->getName();
     $form['#attached']['library'][] = 'hms_commerce/premiumContentWidget';
-    $form['#attached']['drupalSettings']['hms_commerce']['premium_content_widget_settings'][$field_name] = 'field--name-' . str_replace('_', '-', $field_name);
+    $form['#attached']['drupalSettings']['hms_commerce']['premium_content_widget_settings'][$field_name] = 'field--name-'
+      . str_replace('_', '-', $field_name);
     return $element;
   }
 
