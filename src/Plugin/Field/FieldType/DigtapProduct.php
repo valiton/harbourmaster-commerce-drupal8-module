@@ -17,7 +17,7 @@ use Drupal\Core\TypedData\DataDefinition;
  *   default_formatter = "digtap_product"
  * )
  */
-class DigtapProduct extends DigtapIdField {
+class DigtapProduct extends DigtapFieldBase {
 
   /**
    * {@inheritdoc}

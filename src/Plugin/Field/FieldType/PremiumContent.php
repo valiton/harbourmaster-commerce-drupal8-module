@@ -17,7 +17,7 @@ use \Drupal\Core\Form\FormStateInterface;
  *   default_formatter = "premium_content",
  * )
  */
-class PremiumContent extends DigtapIdField {
+class PremiumContent extends DigtapFieldBase {
 
   public static function defaultFieldSettings() {
     return [

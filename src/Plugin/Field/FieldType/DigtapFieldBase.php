@@ -5,7 +5,7 @@ use Drupal\Core\Field\Plugin\Field\FieldType\NumericItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
-abstract class DigtapIdField extends NumericItemBase {
+abstract class DigtapFieldBase extends NumericItemBase {
 
   const MAX_LENGTH = 9;
 
