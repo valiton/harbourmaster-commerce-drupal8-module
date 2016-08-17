@@ -85,8 +85,8 @@ class DigtapProductWidget extends WidgetBase {
    * validation on each value and save them separately.
    */
   public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
-    $value_string = $form_state->getValue($this->fieldDefinition->getName());
-    $values = explode(',', $value_string[0]);
+    $field_value = $form_state->getValue($this->fieldDefinition->getName());
+    $values = explode(',', $field_value[0]['products']['product_store']);
     foreach($values as $i => $value) {
       $values[$i] = [
         'value' => $value,
