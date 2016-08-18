@@ -175,7 +175,7 @@ class PremiumContentManager {
       if (!empty($rendered_field)) {
         $encrypted_content = $this->encrypter->encryptContent($rendered_field);
         $encrypted_field = [
-          '#markup' => $this->addPremiumFieldMarkup($encrypted_content),
+          '#markup' => $this->addShowToEntitledMarkup($encrypted_content),
           '#weight' => $build[$field_name]['#weight'],
         ];
         $build[$field_name] = $encrypted_field;
@@ -202,23 +202,22 @@ class PremiumContentManager {
   }
 
   /**
-   * Adds some HMS specific markup to an encrypted field string.
+   * Adds some HMS specific markup to a field string.
    *
-   * @param $encrypted_string
+   * @param $build
    *
    * @return string
    */
-  private function addPremiumFieldMarkup($encrypted_string) {
-    $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
-    $output = "<div hms-access='"
-      . $entitlement_group_name
-      . $this->hmsContentId
-      . "' hms-external-id='"
-      . $this->hmsContentId
-      . "'>"
-      . $encrypted_string
-      . "</div>";
-    return $output;
+  public function addPremiumContentFieldMarkup(&$build) {
+    $field_name = $this->premiumContentField->getName();
+    if (isset($build[$field_name])) {
+      $rendered_field = [
+        '#markup' => $this->addShowToNotEntitledMarkup(render($build[$field_name])),
+        '#weight' => $build[$field_name]['#weight'],
+      ];
+      $build[$field_name] = $rendered_field;
+    }
+    return $this;
   }
 
   /**
@@ -230,23 +229,46 @@ class PremiumContentManager {
    * @return $this
    */
   public function addTeaserMarkup(&$build) {
-    $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
     foreach($this->teaserFields as $teaser_field_name) {
       if (isset($build[$teaser_field_name])) {
-        $rendered_field = render($build[$teaser_field_name]);
-        $rendered_teaser = [
-          '#markup' => "<div hms-access='NOT("
-            . $entitlement_group_name
-            . $this->hmsContentId
-            . ")'>"
-            . $rendered_field
-            . "</div>",
+        $rendered_field = [
+          '#markup' => $this->addShowToNotEntitledMarkup(render($build[$teaser_field_name])),
           '#weight' => $build[$teaser_field_name]['#weight'],
         ];
-        $build[$teaser_field_name] = $rendered_teaser;
+        $build[$teaser_field_name] = $rendered_field;
       }
     }
     return $this;
+  }
+
+  /**
+   * Adds some HMS specific markup to a (encrypted) field string.
+   *
+   * @param $string
+   *
+   * @return string
+   */
+  private function addShowToEntitledMarkup($string) {
+    $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
+    $output = "<div hms-access='"
+      . $entitlement_group_name
+      . $this->hmsContentId
+      . "' hms-external-id='"
+      . $this->hmsContentId
+      . "'>"
+      . $string
+      . "</div>";
+    return $output;
+  }
+
+  private function addShowToNotEntitledMarkup($string) {
+    $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
+    return "<div hms-access='NOT("
+    . $entitlement_group_name
+    . $this->hmsContentId
+    . ")'>"
+    . $string
+    . "</div>";
   }
 
   /**

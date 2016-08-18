@@ -11,6 +11,8 @@ abstract class DigtapFormatterBase extends FormatterBase {
 
   /**
    * {@inheritdoc}
+   *
+   * @todo Only show element if content is premium and user has no entitlement?
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];

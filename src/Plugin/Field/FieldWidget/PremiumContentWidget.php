@@ -27,7 +27,7 @@ class PremiumContentWidget extends WidgetBase {
       '#type' => 'checkbox',
       '#title' => $this->t($items->getFieldDefinition()->getLabel()),
       '#default_value' => !is_null($default_value),
-      '#element_validate' => [[$this, 'validatePremium']],
+//      '#element_validate' => [[$this, 'validatePremium']],
     ];
 
     $price_categories = \Drupal::service('hms_commerce.settings')->getPriceCategories();
@@ -63,7 +63,7 @@ class PremiumContentWidget extends WidgetBase {
    */
   public function validatePremium($element, FormStateInterface $form_state) {
     if (empty($element['#value'])) {
-//      $form = $form_state->getCompleteForm();
+      $form = $form_state->getCompleteForm();
     }
   }
 

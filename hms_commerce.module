@@ -50,6 +50,7 @@ function hms_commerce_entity_view_alter(array &$build, Drupal\Core\Entity\Entity
 
   if ($manager->entityIsPremium()) {
     $manager->encryptPremiumFields($build)
-      ->addTeaserMarkup($build);
+      ->addTeaserMarkup($build)
+      ->addPremiumContentFieldMarkup($build);
   }
 }
