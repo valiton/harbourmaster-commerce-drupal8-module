@@ -1,7 +1,7 @@
 services:
   hms_commerce.settings:
     class: Drupal\hms_commerce\Digtap
-    arguments: ['@config.factory']
+    arguments: ['@config.factory', '@logger.channel.hms_commerce', '@current_user']
 
   hms_commerce.encrypter:
     class: Drupal\hms_commerce\Encrypter
@@ -9,3 +9,8 @@ services:
   hms_commerce.premium_content_manager:
     class: Drupal\hms_commerce\PremiumContentManager
     arguments: ['@hms_commerce.settings', '@hms_commerce.encrypter']
+
+  logger.channel.hms_commerce:
+    parent: logger.channel_base
+    arguments:
+      - hms_commerce

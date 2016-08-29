@@ -3,6 +3,7 @@
 namespace Drupal\hms_commerce\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\UrlHelper;
 
@@ -10,6 +11,25 @@ use Drupal\Component\Utility\UrlHelper;
  * SettingsFrom
  */
 class SettingsForm extends ConfigFormBase {
+
+  protected $settings;
+
+  /**
+   * SettingsForm constructor.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $settings
+   */
+  public function __construct($settings) {
+    $this->settings = $settings;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('hms_commerce.settings')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -29,33 +49,31 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $settings = \Drupal::service('hms_commerce.settings');
-
     $form['bestseller_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Bestseller API URL'),
-      '#default_value' => $settings->getSetting('bestseller_url'),
+      '#default_value' => $this->settings->getSetting('bestseller_url'),
       '#description' => $this->t('Absolute URL to the Bestseller API without trailing slash.'),
     ];
 
     $form['entitlement_group_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Entitlement group name'),
-      '#default_value' => $settings->getSetting('entitlement_group_name'),
+      '#default_value' => $this->settings->getSetting('entitlement_group_name'),
       '#description' => $this->t(''), //todo Add field description.
     ];
 
     $form['shared_secret_key'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Shared secret key'),
-      '#default_value' => $settings->getSetting('shared_secret_key'),
+      '#default_value' => $this->settings->getSetting('shared_secret_key'),
       '#description' => $this->t('Shared secret key used to encrypt the content.'),
     ];
 
     $form['premium_content_error'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Premium content error message'),
-      '#default_value' => $settings->getSetting('premium_content_error'),
+      '#default_value' => $this->settings->getSetting('premium_content_error'),
       '#description' => $this->t('A generic error that will be shown to end users when something goes wrong.'),
     ];
 
@@ -86,11 +104,10 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $settings = \Drupal::service('hms_commerce.settings');
-    $settings->saveSetting('bestseller_url', $form_state->getValue('bestseller_url'));
-    $settings->saveSetting('entitlement_group_name', $form_state->getValue('entitlement_group_name'));
-    $settings->saveSetting('shared_secret_key', $form_state->getValue('shared_secret_key'));
-    $settings->saveSetting('premium_content_error', $form_state->getValue('premium_content_error'));
+    $this->settings->saveSetting('bestseller_url', $form_state->getValue('bestseller_url'));
+    $this->settings->saveSetting('entitlement_group_name', trim($form_state->getValue('entitlement_group_name')));
+    $this->settings->saveSetting('shared_secret_key', trim($form_state->getValue('shared_secret_key')));
+    $this->settings->saveSetting('premium_content_error', trim($form_state->getValue('premium_content_error')));
     parent::submitForm($form, $form_state);
   }
 }

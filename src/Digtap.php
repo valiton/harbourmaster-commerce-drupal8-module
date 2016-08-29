@@ -14,6 +14,8 @@ class Digtap {
 
   private $configFactory;
   private $config;
+  private $logger;
+  private $currentUser;
 
   const PRICE_CATEGORY_API_PATH = '/home/de/api/v1/products';
   const DIGTAP_WIDGET_FRONTEND_JS_PATH = '/bundles/digtapecom/widgets/frontend/stage/digtap-widget-frontend.min.js';
@@ -22,13 +24,15 @@ class Digtap {
 
   /**
    * Digtap constructor.
-   *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
-   *   The config factory from the container.
+   * @param $logger
+   * @param $current_user
    */
-  function __construct(ConfigFactoryInterface $config_factory) {
+  function __construct(ConfigFactoryInterface $config_factory, $logger, $current_user) {
     $this->configFactory = $config_factory;
     $this->config = $config_factory->get('hms_commerce.settings');
+    $this->logger = $logger;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -80,7 +84,7 @@ class Digtap {
    *  Returns the resource URL string or an empty string.
    */
   public function getResourceUrl($resource) {
-    $bestseller_url = $this->getSetting('bestseller_url', $this->t("For products to display, the Bestseller API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]));
+    $bestseller_url = $this->getSetting('bestseller_url', ["For products to display, the Bestseller API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]]);
     switch($resource) {
       case 'bestseller':
         return $bestseller_url;
@@ -95,7 +99,7 @@ class Digtap {
         return $bestseller_url . self:: DIGTAP_WIDGET_BACKEND_JS_PATH;
 
       case 'premium_content':
-        $error_message = $this->t("For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/hms"]);
+        $error_message = ["For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/hms"]];
         return $this->getSetting('usermanager_url', $error_message) . self::PREMIUM_CONTENT_JS_PATH;
     }
     return '';
@@ -120,29 +124,34 @@ class Digtap {
           }
         }
         else {
-          $this->registerError($this->t("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module. The price category cannot be changed at this time."), 'error');
+          $this->registerError("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module. The price category cannot be changed at this time.", 'error');
         }
       }
       else {
-        $this->registerError($this->t("There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>. The price category cannot be changed at this time.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]), 'error');
+        $this->registerError(["There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>. The price category cannot be changed at this time.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]], 'error');
       }
     }
     return $categories;
   }
 
   /**
-   * Logs error and displays it to the privileged user.
+   * Logs error and optionally displays it to the privileged user.
    *
    * @param $message
-   * @param string $display (optional)
+   *  Can be string or an array where the first value is the message string and
+   *  the second value an array with arrays containing
+   *  placeholder => replacement values for the message.
+   * @param string $display
    *  Message type (status/warning/error), if set, message is displayed to
-   *  privileged user accordingly.
+   *  privileged user in addition to being logged.
    */
   public function registerError($message, $display = NULL) {
-    \Drupal::logger('hms_commerce')->notice($message);
+    $substitutions = isset($message[1]) && is_array($message[1]) ? $message[1] : [];
+    $message = is_array($message) ? $message[0] : $message;
+    $this->logger->notice(strtr($message, $substitutions));
     if (!empty($display)
-      && \Drupal::currentUser()->hasPermission('administer hms_commerce settings')) {
-      drupal_set_message($message, $display);
+      && $this->currentUser->hasPermission('administer hms_commerce settings')) {
+      drupal_set_message($this->t($message, $substitutions), $display);
     }
   }
 }
