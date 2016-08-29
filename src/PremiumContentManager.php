@@ -119,10 +119,12 @@ class PremiumContentManager {
         $this->addTeaserMarkup();
       }
       if ($this->entityIsPremium()) {
-        $this->addPremiumContentErrorMessage();
         $this->setPremiumFields();
-        $this->encryptPremiumFields();
-        $this->addPremiumContentFieldMarkup();
+        if (!empty($this->getPremiumFields())) {
+          $this->addPremiumContentErrorMessage();
+          $this->encryptPremiumFields();
+          $this->addPremiumContentFieldMarkup();
+        }
       }
     }
   }
