@@ -14,6 +14,8 @@ use Drupal\Core\Form\FormStateInterface;
  *     "digtap_product"
  *   }
  * )
+ *
+ * @todo Extend ContainerFactoryPluginInterface and inject services instead of calling \Drupal::service().
  */
 class DigtapProductWidget extends WidgetBase {
 

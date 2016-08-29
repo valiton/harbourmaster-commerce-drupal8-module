@@ -14,6 +14,8 @@ use Drupal\Core\Form\FormStateInterface;
  *     "premium_content"
  *   }
  * )
+ *
+ * @todo Extend ContainerFactoryPluginInterface and inject services instead of calling \Drupal::service().
  */
 class PremiumContentWidget extends WidgetBase {
 

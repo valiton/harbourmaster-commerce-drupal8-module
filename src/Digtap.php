@@ -56,8 +56,9 @@ class Digtap {
    *
    * @param string $setting_name
    *
-   * @param string $error_message
-   *  If setting is not set or empty, log/display an error message.
+   * @param string|array $error_message
+   *  If string or an array containing the message text and a
+   *  placeholder => replacement array, log/display an error message.
    *
    * @return mixed setting
    */

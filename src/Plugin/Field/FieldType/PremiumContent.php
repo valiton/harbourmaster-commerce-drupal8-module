@@ -16,6 +16,8 @@ use \Drupal\Core\Form\FormStateInterface;
  *   default_widget = "premium_content",
  *   default_formatter = "premium_content",
  * )
+ *
+ * @todo Extend ContainerFactoryPluginInterface and inject services instead of calling \Drupal::service().
  */
 class PremiumContent extends DigtapFieldBase {
 

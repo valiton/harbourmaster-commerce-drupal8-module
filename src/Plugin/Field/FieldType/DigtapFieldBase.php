@@ -5,6 +5,12 @@ use Drupal\Core\Field\Plugin\Field\FieldType\NumericItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Class DigtapFieldBase
+ * @package Drupal\hms_commerce\Plugin\Field\FieldType
+ *
+ * @todo Extend ContainerFactoryPluginInterface and inject services instead of calling \Drupal::service().
+ */
 abstract class DigtapFieldBase extends NumericItemBase {
 
   const MAX_LENGTH = 9;

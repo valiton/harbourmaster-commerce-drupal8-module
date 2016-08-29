@@ -5,6 +5,12 @@ namespace Drupal\hms_commerce\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
 
+/**
+ * Class DigtapFormatterBase
+ * @package Drupal\hms_commerce\Plugin\Field\FieldFormatter
+ *
+ * @todo Extend ContainerFactoryPluginInterface and inject services instead of calling \Drupal::service().
+ */
 abstract class DigtapFormatterBase extends FormatterBase {
 
   protected $widgetType = 'PremiumDownload';
