@@ -100,7 +100,7 @@ class Digtap {
         return $bestseller_url . self:: DIGTAP_WIDGET_BACKEND_JS_PATH;
 
       case 'premium_content':
-        $error_message = ["For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/hms"]];
+        $error_message = ["For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/harbourmaster"]];
         return $this->getSetting('usermanager_url', $error_message) . self::PREMIUM_CONTENT_JS_PATH;
     }
     return '';
