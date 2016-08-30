@@ -1,7 +1,8 @@
 name: HMS Commerce
-description: 'Marries Thunder with Harbourmaster commerce functionality.'
+description: 'Integrates Bestseller into Drupal.'
 type: module
 core: 8.x
-package: Custom
+package: Harbourmaster
+configure: hms_commerce.settings
 dependencies:
-  - hms:hms
+  - harbourmaster:harbourmaster
