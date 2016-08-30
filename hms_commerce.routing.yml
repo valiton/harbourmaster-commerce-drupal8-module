@@ -2,6 +2,6 @@ hms_commerce.settings:
   path: '/admin/config/hmscommerce'
   defaults:
     _form: '\Drupal\hms_commerce\Form\SettingsForm'
-    _title: 'HMS Commerce settings'
+    _title: 'Harbourmaster Commerce settings'
   requirements:
     _permission: 'administer hms_commerce settings'
