@@ -13,8 +13,6 @@ class PremiumContentManager {
 
   private $entity;
 
-  private $build;
-
   private $digtapSettings;
 
   /**
@@ -96,35 +94,26 @@ class PremiumContentManager {
    */
   public function setEntity($entity) {
     $this->entity = $entity;
-    $this->setHmsContentId();
-    return $this;
-  }
-
-  /**
-   * @param $build
-   * @return $this
-   */
-  public function setBuild(&$build) {
-    $this->build = &$build;
-    return $this;
-  }
-
-  public function process() {
     if ($this->setPremiumContentField()) {
+      $this->setHmsContentId();
       $this->premiumCapable = TRUE;
       $this->premium = !$this->premiumContentField->isEmpty();
       $this->setTeaserFields();
-      if ($this->entityIsPremium() || !empty($this->getTeaserFields())) {
-        $this->build['#attached']['library'][] = 'hms_commerce/premiumContent';
-        $this->addTeaserMarkup();
-      }
-      if ($this->entityIsPremium()) {
-        $this->setPremiumFields();
-        if (!empty($this->getPremiumFields())) {
-          $this->addPremiumContentErrorMessage();
-          $this->encryptPremiumFields();
-          $this->addPremiumContentFieldMarkup();
-        }
+      $this->setPremiumFields();
+    }
+    return $this;
+  }
+
+  public function process(&$build) {
+    if ($this->entityIsPremium() || !empty($this->getTeaserFields())) {
+      $build['#attached']['library'][] = 'hms_commerce/premiumContent';
+      $build = $this->addTeaserMarkup($build);
+    }
+    if ($this->entityIsPremium()) {
+      if (!empty($this->getPremiumFields())) {
+        $build = $this->addPremiumContentErrorMessage($build);
+        $build = $this->encryptPremiumFields($build);
+        $build = $this->addPremiumContentFieldMarkup($build);
       }
     }
   }
@@ -213,13 +202,14 @@ class PremiumContentManager {
    *
    * @return $this
    */
-  private function encryptPremiumFields() {
+  private function encryptPremiumFields($build) {
     $this->encrypter
       ->setHmsContentId($this->hmsContentId)
       ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'));
     foreach($this->premiumFields as $premium_field_name) {
-      $this->encryptField($premium_field_name, $this->build);
+      $build = $this->encryptField($premium_field_name, $build);
     }
+    return $build;
   }
 
   /**
@@ -230,34 +220,34 @@ class PremiumContentManager {
    * @return bool
    *  FALSE if field not in $build array, otherwise TRUE.
    */
-  private function encryptField($field_name) {
-    if (isset($this->build[$field_name])) {
-      $rendered_field = render($this->build[$field_name]);
+  private function encryptField($field_name, $build) {
+    if (isset($build[$field_name])) {
+      $weight = $build[$field_name]['#weight'];
+      $rendered_field = render($build[$field_name]);
       if (!empty($rendered_field)) {
         $encrypted_content = $this->encrypter->encryptContent($rendered_field);
-        $encrypted_field = [
+        $build[$field_name] = [
           '#markup' => $this->addShowToEntitledMarkup($encrypted_content),
-          '#weight' => $this->build[$field_name]['#weight'],
+          '#weight' => $weight,
         ];
-        $this->build[$field_name] = $encrypted_field;
       }
-      return TRUE;
     }
-    return FALSE;
+    return $build;
   }
 
   /**
    * Adds a generic error message near the top of the rendered entity.
    * Message is hidden via CSS and triggered via JS if needed.
    */
-  private function addPremiumContentErrorMessage() {
+  private function addPremiumContentErrorMessage($build) {
     $message = $this->digtapSettings->getSetting('premium_content_error');
     if (!empty($message)) {
-      $this->build['premium_content_error_message'] = [
+      $build['premium_content_error_message'] = [
         '#markup' => "<div class='hms-access-error'>" .  $this->t($message) . "</div>",
         '#weight' => self::ERROR_MESSAGE_WEIGHT,
       ];
     }
+    return $build;
   }
 
   /**
@@ -265,15 +255,17 @@ class PremiumContentManager {
    *
    * @return string
    */
-  private function addPremiumContentFieldMarkup() {
+  private function addPremiumContentFieldMarkup($build) {
     $field_name = $this->premiumContentField->getName();
-    if (isset($this->build[$field_name])) {
-      $rendered_field = [
-        '#markup' => $this->addShowToNotEntitledMarkup(render($this->build[$field_name])),
-        '#weight' => $this->build[$field_name]['#weight'],
+    if (isset($build[$field_name])) {
+      $weight = $build[$field_name]['#weight'];
+      $rendered_field = render($build[$field_name]);
+      $build[$field_name] = [
+        '#markup' => $this->addShowToNotEntitledMarkup($rendered_field),
+        '#weight' => $weight,
       ];
-      $this->build[$field_name] = $rendered_field;
     }
+    return $build;
   }
 
   /**
@@ -282,16 +274,18 @@ class PremiumContentManager {
    *
    * @return $this
    */
-  private function addTeaserMarkup() {
+  private function addTeaserMarkup($build) {
     foreach($this->teaserFields as $teaser_field_name) {
-      if (isset($this->build[$teaser_field_name])) {
-        $rendered_field = [
-          '#markup' => $this->addShowToNotEntitledMarkup(render($this->build[$teaser_field_name])),
-          '#weight' => $this->build[$teaser_field_name]['#weight'],
+      if (isset($build[$teaser_field_name])) {
+        $weight = $build[$teaser_field_name]['#weight'];
+        $rendered_field = render($build[$teaser_field_name]);
+        $build[$teaser_field_name] = [
+          '#markup' => $this->addShowToNotEntitledMarkup($rendered_field),
+          '#weight' => $weight,
         ];
-        $this->build[$teaser_field_name] = $rendered_field;
       }
     }
+    return $build;
   }
 
   /**

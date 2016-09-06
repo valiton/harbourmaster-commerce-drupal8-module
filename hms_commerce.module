@@ -47,6 +47,5 @@ function hms_commerce_library_info_build() {
 function hms_commerce_entity_view_alter(array &$build, Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display) {
   \Drupal::service('hms_commerce.premium_content_manager')
     ->setEntity($entity)
-    ->setBuild($build)
-    ->process();
+    ->process($build);
 }
