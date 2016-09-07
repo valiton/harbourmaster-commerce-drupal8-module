@@ -8,7 +8,7 @@ After installing the module, got to admin/config/hmscommerce and provide
   * the generic error message which will be shown to end users when something
     goes wrong,
   * if not already set, also provide the usermanager API URL on the page
-    admin/people/hms.
+    admin/people/harbourmaster.
 
 Premium content
 -----------

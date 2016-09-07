@@ -95,8 +95,8 @@ class PremiumContentManager {
   public function setEntity($entity) {
     $this->entity = $entity;
     if ($this->setPremiumContentField()) {
-      $this->setHmsContentId();
       $this->premiumCapable = TRUE;
+      $this->setHmsContentId();
       $this->premium = !$this->premiumContentField->isEmpty();
       $this->setTeaserFields();
       $this->setPremiumFields();
@@ -104,13 +104,15 @@ class PremiumContentManager {
     return $this;
   }
 
+  /**
+   * @param $build
+   */
   public function process(&$build) {
     if ($this->entityIsPremium() || !empty($this->getTeaserFields())) {
       $build['#attached']['library'][] = 'hms_commerce/premiumContent';
       $build = $this->addTeaserMarkup($build);
-    }
-    if ($this->entityIsPremium()) {
-      if (!empty($this->getPremiumFields())) {
+
+      if ($this->entityIsPremium() && !empty($this->getPremiumFields())) {
         $build = $this->addPremiumContentErrorMessage($build);
         $build = $this->encryptPremiumFields($build);
         $build = $this->addPremiumContentFieldMarkup($build);
@@ -200,7 +202,8 @@ class PremiumContentManager {
    * Encrypts the premium bits of an entity's render array with an encrypter.
    * Should be called in hook_entity_view_alter.
    *
-   * @return $this
+   * @param $build
+   * @return bool
    */
   private function encryptPremiumFields($build) {
     $this->encrypter
@@ -216,6 +219,7 @@ class PremiumContentManager {
    * Encrypts a field.
    *
    * @param $field_name
+   * @param $build
    *
    * @return bool
    *  FALSE if field not in $build array, otherwise TRUE.
@@ -238,6 +242,9 @@ class PremiumContentManager {
   /**
    * Adds a generic error message near the top of the rendered entity.
    * Message is hidden via CSS and triggered via JS if needed.
+   *
+   * @param $build
+   * @return array
    */
   private function addPremiumContentErrorMessage($build) {
     $message = $this->digtapSettings->getSetting('premium_content_error');
@@ -253,7 +260,8 @@ class PremiumContentManager {
   /**
    * Adds some HMS specific markup to a field string.
    *
-   * @return string
+   * @param $build
+   * @return array
    */
   private function addPremiumContentFieldMarkup($build) {
     $field_name = $this->premiumContentField->getName();
@@ -272,7 +280,8 @@ class PremiumContentManager {
    * Adds HMS specific markup to teaser fields if such fields are defined in the
    * premium_field's settings.
    *
-   * @return $this
+   * @param $build
+   * @return array
    */
   private function addTeaserMarkup($build) {
     foreach($this->teaserFields as $teaser_field_name) {
@@ -292,7 +301,6 @@ class PremiumContentManager {
    * Adds some HMS specific markup to a (encrypted) field string.
    *
    * @param $string
-   *
    * @return string
    */
   private function addShowToEntitledMarkup($string) {
@@ -308,6 +316,10 @@ class PremiumContentManager {
     return $output;
   }
 
+  /**
+   * @param $string
+   * @return string
+   */
   private function addShowToNotEntitledMarkup($string) {
     $entitlement_group_name = !empty($this->entitlementGroupName) ? $this->entitlementGroupName . " OR " : '';
     return "<div hms-access='NOT("

@@ -65,7 +65,7 @@ class Digtap {
   public function getSetting($setting_name, $error_message = '') {
     switch($setting_name) {
       case 'usermanager_url':
-        $setting = $this->configFactory->get('hms.settings')->get('user_manager_url');
+        $setting = $this->configFactory->get('harbourmaster.settings')->get('user_manager_url');
         break;
       default:
         $setting = $this->config->get($setting_name);
