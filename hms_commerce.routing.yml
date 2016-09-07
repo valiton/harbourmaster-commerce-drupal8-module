@@ -5,3 +5,11 @@ hms_commerce.settings:
     _title: 'Harbourmaster Commerce settings'
   requirements:
     _permission: 'administer hms_commerce settings'
+
+hms_commerce.newsletter:
+  path: '/admin/config/hmscommerce/newsletter'
+  defaults:
+    _form: '\Drupal\hms_commerce\Form\NewsletterForm'
+    _title: 'Harbourmaster Commerce settings'
+  requirements:
+    _permission: 'administer hms_commerce settings'

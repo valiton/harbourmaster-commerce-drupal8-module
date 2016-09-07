@@ -3,7 +3,7 @@ hms_commerce.settings:
   mapping:
     bestseller_url:
       label: 'Bestseller API URL'
-      type: string
+      type: uri
     entitlement_group_name:
       label: 'Entitlement group name'
       type: string
@@ -13,6 +13,23 @@ hms_commerce.settings:
     premium_content_error:
       label: 'Premium content error message'
       type: string
+    newsletter_client_id:
+      label: 'Newsletter client ID'
+      type: integer
+    newsletter_origin:
+      label: 'Newsletter origin'
+      type: string
+    newsletter_groups:
+      label: 'Newsletter groups'
+      type: sequence
+      sequence:
+        type: string
+    show_contact_permission:
+      label: 'Show contact permission'
+      type: boolean
+    show_privacy_permission:
+      label: 'Show privacy permission'
+      type: boolean
 
 field.field_settings.premium_content:
   type: mapping

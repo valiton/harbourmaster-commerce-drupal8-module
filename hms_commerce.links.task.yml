@@ -1,0 +1,9 @@
+hms_commerce.settings:
+  title: 'Configure'
+  route_name: hms_commerce.settings
+  base_route: hms_commerce.settings
+
+hms_commerce.newsletter:
+  title: 'Newsletter'
+  route_name: hms_commerce.newsletter
+  base_route: hms_commerce.settings

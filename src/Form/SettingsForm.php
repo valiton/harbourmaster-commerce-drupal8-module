@@ -8,7 +8,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\UrlHelper;
 
 /**
- * SettingsFrom
+ * Class SettingsForm
+ * @package Drupal\hms_commerce\Form
  */
 class SettingsForm extends ConfigFormBase {
 
