@@ -4,6 +4,7 @@ namespace Drupal\hms_commerce\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
+use Drupal\hms_commerce\Form\NewsletterForm;
 
 /**
  * Class DigtapFormatterBase
@@ -38,14 +39,27 @@ abstract class DigtapFormatterBase extends FormatterBase {
       }
 
       // Attach JS and its settings to field formatter.
-      $bestseller_url = \Drupal::service('hms_commerce.settings')->getResourceUrl('bestseller');
-      if (!empty($bestseller_url)) {
+      $settings = \Drupal::service('hms_commerce.settings');
+      if (!empty($bestseller_url = $settings->getResourceUrl('bestseller'))) {
         $elements['#attached']['library'][] = 'hms_commerce/products';
         $elements['#attached']['drupalSettings']['hms_commerce']['bestseller_url'] = $bestseller_url;
         $elements['#attached']['drupalSettings']['hms_commerce']['formatter_settings'][$this->widgetType][$field_name] = [
           'field_dom_id' => $field_dom_id,
           'product_ids' => $product_ids,
         ];
+
+        // Attach newsletter settings.
+        $elements['#attached']['drupalSettings']['hms_commerce']['newsletter'] = [
+          'client' => $settings->getSetting('newsletter_client_id'),
+          'origin' => !empty($origin = $settings->getSetting('newsletter_origin')) ? $origin : NewsletterForm::getOrigin(),
+          'contact_permission' => $settings->getSetting('show_contact_permission') ? 1 : 0,
+          'privacy_permission' => $settings->getSetting('show_privacy_permission') ? 1 : 0,
+        ];
+        $newsletter_groups = $settings->getSetting('newsletter_groups');
+        $elements['#attached']['drupalSettings']['hms_commerce']['newsletter']['newsletter_groups'] = $newsletter_groups;
+        foreach($newsletter_groups as $group) {
+          $elements['#attached']['drupalSettings']['hms_commerce']['newsletter']['newsletter_groups'][$group['id']] = $group['name'];
+        }
       }
     }
     return $elements;

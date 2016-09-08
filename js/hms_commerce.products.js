@@ -14,7 +14,8 @@
       var bestsellerUrl = settings.hms_commerce.bestseller_url;
       window._digtapq = window._digtapq || [];
       window._digtapq.push(['configure', {
-        api: bestsellerUrl
+        api: bestsellerUrl,
+        newsletter: settings.hms_commerce.newsletter
       }]);
 
       // Gather settings applying to all Digtap field formatters on the page.

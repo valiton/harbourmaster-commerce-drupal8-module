@@ -14,8 +14,6 @@ class NewsletterForm extends ConfigFormBase {
 
   protected $settings;
 
-  const NUMBER_GROUPS = 5;
-
   /**
    * SettingsForm constructor.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $settings
@@ -47,7 +45,7 @@ class NewsletterForm extends ConfigFormBase {
     return ['hms_commerce.settings'];
   }
 
-  protected function getOrigin() {
+  public static function getOrigin() {
     $site_name = \Drupal::config('system.site')->get('name');
     return 'DIGTAP_' . str_replace(' ', '_', $site_name);
   }
@@ -56,10 +54,12 @@ class NewsletterForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $form['#tree'] = TRUE;
+
     $form['newsletter_client_id'] = [
       '#type' => 'number',
       '#title' => $this->t('Newsletter client ID'),
-      '#default_value' => $this->settings->getSetting('client_id'),
+      '#default_value' => $this->settings->getSetting('newsletter_client_id'),
       '#required' => TRUE,
       '#description' => $this->t('Client ID'),
       '#min' => 0,
@@ -68,8 +68,8 @@ class NewsletterForm extends ConfigFormBase {
     $form['newsletter_origin'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Newsletter origin'),
-      '#description' => $this->t('If left empty, <em>@origin</em> is used.', ['@origin' => $this->getOrigin()]),
-      '#default_value' => $this->settings->getSetting('origin'),
+      '#description' => $this->t('If left empty, <em>@origin</em> is used.', ['@origin' => $this::getOrigin()]),
+      '#default_value' => $this->settings->getSetting('newsletter_origin'),
     ];
 
     $form['newsletter_groups'] = [
@@ -79,14 +79,68 @@ class NewsletterForm extends ConfigFormBase {
       '#description' => $this->t('Newsletter groups'),
     ];
 
-    $groups = $this->settings->getSetting('newsletter_groups');
-    for ($i = 0; $i < self::NUMBER_GROUPS; $i++) {
-      $form['newsletter_groups']['newsletter_group_' . $i] = [
-        '#type' => 'textfield',
-        '#title' => $this->t('Group @number', ['@number' => $i+1]),
-        '#default_value' => isset($groups[$i]) ? $groups[$i] : '',
-      ];
+    $form['newsletter_groups'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Newsletter groups'),
+      '#prefix' => '<div id="newsletter-groups-fieldset-wrapper">',
+      '#suffix' => '</div>',
+    ];
+
+    if ($initial = is_null($form_state->get('newsletter_groups_num'))) {
+      $newsletter_groups = $this->settings->getSetting('newsletter_groups');
+      $newsletter_groups_num = count($newsletter_groups);
+      $form_state->set('newsletter_groups_num', $newsletter_groups_num);
     }
+    else {
+      $newsletter_groups_num = $form_state->get('newsletter_groups_num');
+    }
+
+    for ($i = 0; $i < $newsletter_groups_num; $i++) {
+      $form['newsletter_groups'][$i] = [
+        '#attributes' => array('class' => array('container-inline')),
+        '#type' => 'fieldset',
+      ];
+
+      $form['newsletter_groups'][$i]['id'] = [
+        '#type' => 'number',
+        '#title' => t('Id'),
+        '#min' => 0,
+      ];
+      $form['newsletter_groups'][$i]['name'] = [
+        '#type' => 'textfield',
+        '#title' => t('Name'),
+      ];
+      if ($initial) {
+        $form['newsletter_groups'][$i]['id']['#default_value'] = $newsletter_groups[$i]['id'];
+        $form['newsletter_groups'][$i]['name']['#default_value'] = $newsletter_groups[$i]['name'];
+      }
+    }
+    $form['actions'] = [
+      '#type' => 'actions',
+    ];
+    $form['newsletter_groups']['actions']['add_group'] = [
+      '#type' => 'submit',
+      '#value' => t('Add one more'),
+      '#submit' => array('::addOne'),
+      '#ajax' => [
+        'callback' => '::addmoreCallback',
+        'wrapper' => 'newsletter-groups-fieldset-wrapper',
+      ],
+      '#validate' => [],
+    ];
+/*    if ($newsletter_groups_num > 1) {
+      $form['newsletter_groups']['actions']['remove_group'] = [
+        '#type' => 'submit',
+        '#value' => t('Remove one'),
+        '#submit' => array('::removeCallback'),
+        '#ajax' => [
+          'callback' => '::addmoreCallback',
+          'wrapper' => 'newsletter-groups-fieldset-wrapper',
+        ],
+        '#validate' => [],
+      ];
+    }*/
+    $form_state->setCached(FALSE);
 
     $form['show_contact_permission'] = [
       '#type' => 'checkbox',
@@ -103,16 +157,62 @@ class NewsletterForm extends ConfigFormBase {
     return parent::buildForm($form, $form_state);
   }
 
+  public function addOne(array &$form, FormStateInterface $form_state) {
+    $newsletter_groups_num = $form_state->get('newsletter_groups_num');
+    $add_button = $newsletter_groups_num + 1;
+    $form_state->set('newsletter_groups_num', $add_button);
+    $form_state->setRebuild();
+  }
+
+  public function addmoreCallback(array &$form, FormStateInterface $form_state) {
+    return $form['newsletter_groups'];
+  }
+
+  public function removeCallback(array &$form, FormStateInterface $form_state) {
+    $newsletter_groups_num = $form_state->get('newsletter_groups_num');
+    if ($newsletter_groups_num > 1) {
+      $form_state->set('newsletter_groups_num', $newsletter_groups_num - 1);
+    }
+    $form_state->setRebuild();
+  }
+
+
   /**
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    //todo if group name filled, id required
+
+    $groups = $form_state->getValue('newsletter_groups');
+    foreach ($groups as $i => &$group_data) {
+      if (!empty($group_data['name']) && empty($group_data['id'])) {
+        $form_state->setErrorByName(
+          'newsletter_groups', $this->t("Every newsletter group name requires a description."));
+      }
+    }
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $groups = $form_state->getValue('newsletter_groups');
+    foreach ($groups as $i => &$group_data) {
+      if (empty($group_data['name'])) {
+        unset($groups[$i]);
+        continue;
+      }
+      $group_data['name'] = trim($group_data['name']);
+    }
+    $this->settings->saveSetting('newsletter_groups', $groups);
+
+
+    $this->settings->saveSetting('newsletter_client_id', $form_state->getValue('newsletter_client_id'));
+    $this->settings->saveSetting('newsletter_origin', trim($form_state->getValue('newsletter_origin')));
+    $this->settings->saveSetting('show_contact_permission', $form_state->getValue('show_contact_permission'));
+    $this->settings->saveSetting('show_privacy_permission', $form_state->getValue('show_privacy_permission'));
+
+
     parent::submitForm($form, $form_state);
   }
 }

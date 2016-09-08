@@ -23,6 +23,15 @@ hms_commerce.settings:
       label: 'Newsletter groups'
       type: sequence
       sequence:
+        type: mapping
+        mapping:
+          id:
+            label: 'ID'
+            type: integer
+          name:
+            label: 'Name'
+            type: string
+      sequence:
         type: string
     show_contact_permission:
       label: 'Show contact permission'
