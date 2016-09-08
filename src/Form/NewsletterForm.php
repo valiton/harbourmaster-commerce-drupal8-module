@@ -61,22 +61,15 @@ class NewsletterForm extends ConfigFormBase {
       '#title' => $this->t('Newsletter client ID'),
       '#default_value' => $this->settings->getSetting('newsletter_client_id'),
       '#required' => TRUE,
-      '#description' => $this->t('Client ID'),
+      '#description' => $this->t('The unique identifying client ID.'),
       '#min' => 0,
     ];
 
     $form['newsletter_origin'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Newsletter origin'),
-      '#description' => $this->t('If left empty, <em>@origin</em> is used.', ['@origin' => $this::getOrigin()]),
+      '#title' => $this->t('Newsletter subscription origin'),
+      '#description' => $this->t('Enter the name which will be used to define where a user subscribes from. If left empty, <em>@origin</em> is used.', ['@origin' => $this::getOrigin()]),
       '#default_value' => $this->settings->getSetting('newsletter_origin'),
-    ];
-
-    $form['newsletter_groups'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Newsletter groups'),
-      '#open' => FALSE,
-      '#description' => $this->t('Newsletter groups'),
     ];
 
     $form['newsletter_groups'] = [
@@ -84,6 +77,7 @@ class NewsletterForm extends ConfigFormBase {
       '#title' => $this->t('Newsletter groups'),
       '#prefix' => '<div id="newsletter-groups-fieldset-wrapper">',
       '#suffix' => '</div>',
+      '#description' => $this->t('The users will be able to subscribe to newsletters defined here.'),
     ];
 
     if ($initial = is_null($form_state->get('newsletter_groups_num'))) {
@@ -158,9 +152,7 @@ class NewsletterForm extends ConfigFormBase {
   }
 
   public function addOne(array &$form, FormStateInterface $form_state) {
-    $newsletter_groups_num = $form_state->get('newsletter_groups_num');
-    $add_button = $newsletter_groups_num + 1;
-    $form_state->set('newsletter_groups_num', $add_button);
+    $form_state->set('newsletter_groups_num', $form_state->get('newsletter_groups_num') + 1);
     $form_state->setRebuild();
   }
 
@@ -169,8 +161,7 @@ class NewsletterForm extends ConfigFormBase {
   }
 
   public function removeCallback(array &$form, FormStateInterface $form_state) {
-    $newsletter_groups_num = $form_state->get('newsletter_groups_num');
-    if ($newsletter_groups_num > 1) {
+    if (($newsletter_groups_num = $form_state->get('newsletter_groups_num')) > 1) {
       $form_state->set('newsletter_groups_num', $newsletter_groups_num - 1);
     }
     $form_state->setRebuild();
@@ -185,17 +176,17 @@ class NewsletterForm extends ConfigFormBase {
     $groups = $form_state->getValue('newsletter_groups');
 
     // Require the ID if name given.
-    foreach ($groups as $i => &$group_data) {
+    foreach ($groups as $i => $group_data) {
       if (!empty($group_data['name']) && empty($group_data['id'])) {
         $form_state->setErrorByName(
-          'newsletter_groups', $this->t("Every newsletter group name requires a description."));
+          'newsletter_groups', $this->t("Every newsletter group requires an ID."));
       }
     }
 
     // Make sure the IDs are unique.
     $group_num = 0;
     $unique_keys = [];
-    foreach ($groups as $i => &$group_data) {
+    foreach ($groups as $i => $group_data) {
       if (!empty($group_data['id'])) {
         $group_num++;
         $unique_keys[$group_data['id']] = $group_data['id'];
@@ -203,7 +194,7 @@ class NewsletterForm extends ConfigFormBase {
     }
     if ($group_num > count($unique_keys)) {
       $form_state->setErrorByName(
-        'newsletter_groups', $this->t("Newsletter IDs must be unique and may not repeat."));
+        'newsletter_groups', $this->t("Newsletter IDs must be unique for each group."));
     }
   }
 
@@ -219,14 +210,11 @@ class NewsletterForm extends ConfigFormBase {
       }
       $group_data['name'] = trim($group_data['name']);
     }
-    $this->settings->saveSetting('newsletter_groups', $groups);
-
-
+    $this->settings->saveSetting('newsletter_groups', array_values($groups));
     $this->settings->saveSetting('newsletter_client_id', $form_state->getValue('newsletter_client_id'));
     $this->settings->saveSetting('newsletter_origin', trim($form_state->getValue('newsletter_origin')));
     $this->settings->saveSetting('show_contact_permission', $form_state->getValue('show_contact_permission'));
     $this->settings->saveSetting('show_privacy_permission', $form_state->getValue('show_privacy_permission'));
-
 
     parent::submitForm($form, $form_state);
   }
