@@ -181,14 +181,29 @@ class NewsletterForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    //todo if group name filled, id required
 
     $groups = $form_state->getValue('newsletter_groups');
+
+    // Require the ID if name given.
     foreach ($groups as $i => &$group_data) {
       if (!empty($group_data['name']) && empty($group_data['id'])) {
         $form_state->setErrorByName(
           'newsletter_groups', $this->t("Every newsletter group name requires a description."));
       }
+    }
+
+    // Make sure the IDs are unique.
+    $group_num = 0;
+    $unique_keys = [];
+    foreach ($groups as $i => &$group_data) {
+      if (!empty($group_data['id'])) {
+        $group_num++;
+        $unique_keys[$group_data['id']] = $group_data['id'];
+      }
+    }
+    if ($group_num > count($unique_keys)) {
+      $form_state->setErrorByName(
+        'newsletter_groups', $this->t("Newsletter IDs must be unique and may not repeat."));
     }
   }
 
