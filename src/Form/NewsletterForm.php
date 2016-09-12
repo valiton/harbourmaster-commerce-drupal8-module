@@ -90,6 +90,7 @@ class NewsletterForm extends ConfigFormBase {
     }
 
     for ($i = 0; $i < $newsletter_groups_num; $i++) {
+
       $form['newsletter_groups'][$i] = [
         '#attributes' => array('class' => array('container-inline')),
         '#type' => 'fieldset',
@@ -100,18 +101,18 @@ class NewsletterForm extends ConfigFormBase {
         '#title' => t('Id'),
         '#min' => 0,
       ];
+
       $form['newsletter_groups'][$i]['name'] = [
         '#type' => 'textfield',
-        '#title' => t('Name'),
+        '#title' => t('Text'),
       ];
+
       if ($initial) {
         $form['newsletter_groups'][$i]['id']['#default_value'] = $newsletter_groups[$i]['id'];
         $form['newsletter_groups'][$i]['name']['#default_value'] = $newsletter_groups[$i]['name'];
       }
     }
-    $form['actions'] = [
-      '#type' => 'actions',
-    ];
+
     $form['newsletter_groups']['actions']['add_group'] = [
       '#type' => 'submit',
       '#value' => t('Add one more'),
@@ -120,6 +121,7 @@ class NewsletterForm extends ConfigFormBase {
         'callback' => '::addmoreCallback',
         'wrapper' => 'newsletter-groups-fieldset-wrapper',
       ],
+
       '#validate' => [],
     ];
 /*    if ($newsletter_groups_num > 1) {
@@ -160,12 +162,12 @@ class NewsletterForm extends ConfigFormBase {
     return $form['newsletter_groups'];
   }
 
-  public function removeCallback(array &$form, FormStateInterface $form_state) {
+/*  public function removeCallback(array &$form, FormStateInterface $form_state) {
     if (($newsletter_groups_num = $form_state->get('newsletter_groups_num')) > 1) {
       $form_state->set('newsletter_groups_num', $newsletter_groups_num - 1);
     }
     $form_state->setRebuild();
-  }
+  }*/
 
 
   /**
