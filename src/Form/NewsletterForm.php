@@ -73,11 +73,12 @@ class NewsletterForm extends ConfigFormBase {
     ];
 
     $form['newsletter_groups'] = [
-      '#type' => 'fieldset',
+      '#type' => 'details',
       '#title' => $this->t('Newsletter groups'),
       '#prefix' => '<div id="newsletter-groups-fieldset-wrapper">',
       '#suffix' => '</div>',
-      '#description' => $this->t('The users will be able to subscribe to newsletters defined here.'),
+      '#description' => $this->t('Users will be able to subscribe to newsletters defined here.'),
+      '#open' => TRUE,
     ];
 
     if ($initial = is_null($form_state->get('newsletter_groups_num'))) {
