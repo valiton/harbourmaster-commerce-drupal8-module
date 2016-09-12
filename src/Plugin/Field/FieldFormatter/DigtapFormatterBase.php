@@ -52,9 +52,9 @@ abstract class DigtapFormatterBase extends FormatterBase {
         $elements['#attached']['drupalSettings']['hms_commerce']['newsletter'] = [
           'client' => $settings->getSetting('newsletter_client_id'),
           'origin' => !empty($origin = $settings->getSetting('newsletter_origin')) ? $origin : NewsletterForm::getOrigin(),
-          'contact_permission' => $settings->getSetting('show_contact_permission') ? 1 : 0,
-          'privacy_permission' => $settings->getSetting('show_privacy_permission') ? 1 : 0,
-          'newsletter_groups' => []
+          'contact_permission' => $settings->getSetting('show_contact_permission'),
+          'privacy_permission' => $settings->getSetting('show_privacy_permission'),
+          'groups' => []
         ];
         foreach($settings->getSetting('newsletter_groups') as $group) {
           $elements['#attached']['drupalSettings']['hms_commerce']['newsletter']['newsletter_groups'][$group['id']] = $group['name'];
