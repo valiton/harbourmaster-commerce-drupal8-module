@@ -17,6 +17,7 @@ class Digtap {
   private $logger;
   private $currentUser;
 
+  const PRICE_CATEGORY_PRODUCT_TYPE_ID = 15;
   const PRICE_CATEGORY_API_PATH = '/home/de/api/v1/products';
   const DIGTAP_WIDGET_FRONTEND_JS_PATH = '/bundles/digtapecom/widgets/frontend/stage/digtap-widget-frontend.min.js';
   const DIGTAP_WIDGET_BACKEND_JS_PATH = '/bundles/digtapecom/widgets/backend/stage/digtap-widget-backend.min.js';
@@ -91,7 +92,9 @@ class Digtap {
         return $bestseller_url;
 
       case 'price_category':
-        return $bestseller_url . self::PRICE_CATEGORY_API_PATH;
+        return $bestseller_url
+        . self::PRICE_CATEGORY_API_PATH . '?'
+        . http_build_query(['filter' => ['product_type_id' => self::PRICE_CATEGORY_PRODUCT_TYPE_ID]]);
 
       case 'digtap_frontend_widget':
         return $bestseller_url . self::DIGTAP_WIDGET_FRONTEND_JS_PATH;
@@ -109,15 +112,24 @@ class Digtap {
   /**
    * @return array
    *  Array with category IDs as indexes and price categories as values.
-   *
-   * @todo Either use curl or implement hook_requirements to check for allow_url_fopen.
-   * @todo Adjust method to API which is to change.
    */
   public function getPriceCategories() {
     $categories = [];
     $url = $this->getResourceUrl('price_category');
     if (!empty($url)) {
-      if (($json = @file_get_contents($url)) !== FALSE) {
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      if (($json = curl_exec($ch)) === FALSE) {
+        $this->registerError(["cURL failed with error @code: @message", [
+          '@code' => curl_errno($ch),
+          '@message' => curl_error($ch)]]
+        );
+        $this->registerError(["There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>. The price category cannot be changed at this time.", [
+          '@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]], 'error'
+        );
+      }
+      else {
         $response = json_decode($json);
         if (isset($response->_embedded->products)) {
           foreach($response->_embedded->products as $product) {
@@ -128,9 +140,7 @@ class Digtap {
           $this->registerError("The data the hms_commerce module received from Bestseller is not what it expected. This may indicate an outdated version of the Drupal hms_commerce module. The price category cannot be changed at this time.", 'error');
         }
       }
-      else {
-        $this->registerError(["There was a problem connecting to the Bestseller API: Either the service is down, or an incorrect URL is set in the <a href='@url'>module settings</a>. The price category cannot be changed at this time.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]], 'error');
-      }
+      curl_close($ch);
     }
     return $categories;
   }
