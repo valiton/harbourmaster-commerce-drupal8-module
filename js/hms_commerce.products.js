@@ -33,14 +33,18 @@
           // Looping through all products within this formatter.
           $.each(productIds, function(productIdIndex, productId) {
 
+            var options = { product_id: Number(productId) };
+            if (fieldSettings.premium_content_url) {
+              options['content_url'] = fieldSettings.premium_content_url;
+            }
+
             // Configure digtap widget for each product.
             window._digtapq.push(['render', {
               widget: widgetType,
               selector: '#' + fieldDomId + '-' + productIdIndex,
-              options: {
-                product_id: Number(productId)
-              }
+              options: options
             }]);
+
           });
         });
       });

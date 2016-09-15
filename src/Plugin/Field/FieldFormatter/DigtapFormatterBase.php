@@ -10,11 +10,14 @@ use Drupal\hms_commerce\Form\NewsletterForm;
  * Class DigtapFormatterBase
  * @package Drupal\hms_commerce\Plugin\Field\FieldFormatter
  *
+ * This is used as a base for the premium content and premium download display
+ * formatters.
+ *
  * @todo Extend ContainerFactoryPluginInterface and inject services instead of calling \Drupal::service().
  */
 abstract class DigtapFormatterBase extends FormatterBase {
 
-  protected $widgetType = 'PremiumDownload';
+  protected $widgetType;
 
   /**
    * {@inheritdoc}
