@@ -86,25 +86,44 @@ class Digtap {
    *  Returns the resource URL string or an empty string.
    */
   public function getResourceUrl($resource) {
-    $bestseller_url = $this->getSetting('bestseller_url', ["For products to display, the Bestseller API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]]);
+
     switch($resource) {
       case 'bestseller':
-        return $bestseller_url;
-
       case 'price_category':
-        return $bestseller_url
-        . self::PRICE_CATEGORY_API_PATH . '?'
-        . http_build_query(['filter' => ['product_type_id' => self::PRICE_CATEGORY_PRODUCT_TYPE_ID]]);
-
       case 'digtap_frontend_widget':
-        return $bestseller_url . self::DIGTAP_WIDGET_FRONTEND_JS_PATH;
-
       case 'digtap_backend_widget':
-        return $bestseller_url . self:: DIGTAP_WIDGET_BACKEND_JS_PATH;
 
+        $bestseller_url = $this->getSetting('bestseller_url', ["For products to display, the Bestseller API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/hmscommerce"]]);
+
+        switch($resource) {
+          case 'bestseller':
+            return $bestseller_url;
+
+          case 'price_category':
+            return $bestseller_url
+            . self::PRICE_CATEGORY_API_PATH . '?'
+            . http_build_query(['filter' => ['product_type_id' => self::PRICE_CATEGORY_PRODUCT_TYPE_ID]]);
+
+          case 'digtap_frontend_widget':
+            return $bestseller_url . self::DIGTAP_WIDGET_FRONTEND_JS_PATH;
+
+          case 'digtap_backend_widget':
+            return $bestseller_url . self:: DIGTAP_WIDGET_BACKEND_JS_PATH;
+        }
+        break;
+
+      case 'usermanager_url':
       case 'premium_content':
-        $error_message = ["For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/harbourmaster"]];
-        return $this->getSetting('usermanager_url', $error_message) . self::PREMIUM_CONTENT_JS_PATH;
+
+      $usermanager_url = $this->getSetting('usermanager_url', ["For the premium functionality to work correctly, the Usermanager API URL needs to be set <a href='@url'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/harbourmaster"]]);
+
+        switch($resource) {
+          case 'usermanager_url':
+            return $usermanager_url;
+          case 'premium_content':
+            return $usermanager_url . self::PREMIUM_CONTENT_JS_PATH;
+        }
+        break;
     }
     return '';
   }

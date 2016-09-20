@@ -15,7 +15,10 @@
       window._digtapq = window._digtapq || [];
       window._digtapq.push(['configure', {
         api: bestsellerUrl,
-        newsletter: settings.hms_commerce.newsletter
+        newsletter: settings.hms_commerce.newsletter,
+        usermanager: {
+          api: settings.hms_commerce.usermanager_url
+        }
       }]);
 
       // Gather settings applying to all Digtap field formatters on the page.
