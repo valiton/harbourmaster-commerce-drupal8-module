@@ -26,10 +26,12 @@ class PremiumContentFormatter extends DigtapFormatterBase {
       //todo: Could use something along $entity->toUrl()->setAbsolute()->toString() but do not want the path alias.
       $entity = $items->getEntity();
       $field_name = $items->getName();
-      $elements['#attached']['drupalSettings']['hms_commerce']['formatter_settings'][$this->widgetType][$field_name]['premium_content_url']
-        = $GLOBALS['base_url']
-        . '/' . $entity->getEntityTypeId()
-        . '/' . $entity->id();
+      $elements['#attached']['drupalSettings']['hms_commerce']['formatter_settings'][$this->widgetType][$field_name]['premium_content'] = [
+        'url' => $GLOBALS['base_url']
+          . '/' . $entity->getEntityTypeId()
+          . '/' . $entity->id(),
+        'id' => $entity->getEntityTypeId() . 'Id' . $entity->id(),
+      ];
     }
 
     return $elements;

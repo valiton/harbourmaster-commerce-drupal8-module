@@ -37,8 +37,11 @@
           $.each(productIds, function(productIdIndex, productId) {
 
             var options = { product_id: Number(productId) };
-            if (fieldSettings.premium_content_url) {
-              options['content_url'] = fieldSettings.premium_content_url;
+
+            // These settings are only available with the PremiumContent widget.
+            if (fieldSettings.premium_content) {
+              options['content_url'] = fieldSettings.premium_content.url;
+              options['hms_external_id'] = fieldSettings.premium_content.id;
             }
 
             // Configure digtap widget for each product.
