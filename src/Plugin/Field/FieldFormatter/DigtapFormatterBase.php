@@ -60,7 +60,7 @@ abstract class DigtapFormatterBase extends FormatterBase {
           'groups' => []
         ];
         foreach($settings->getSetting('newsletter_groups') as $group) {
-          $elements['#attached']['drupalSettings']['hms_commerce']['newsletter']['newsletter_groups'][$group['id']] = $group['name'];
+          $elements['#attached']['drupalSettings']['hms_commerce']['newsletter']['groups'][$group['id']] = $group['name'];
         }
 
         // Attach usermanager url as configured in the module settings.
