@@ -36,20 +36,26 @@
           // Looping through all products within this formatter.
           $.each(productIds, function(productIdIndex, productId) {
 
-            var options = { product_id: Number(productId) };
+            var renderProperties = {
+              widget: widgetType,
+              selector: '#' + fieldDomId + '-' + productIdIndex,
+              options: {
+                product_id: Number(productId)
+              }
+            };
 
             // These settings are only available with the PremiumContent widget.
-            if (fieldSettings.premium_content) {
-              options['content_url'] = fieldSettings.premium_content.url;
-              options['hms_external_id'] = fieldSettings.premium_content.id;
+            if (widgetType == 'PremiumContent') {
+              renderProperties.options['content_url'] = fieldSettings.premium_content.url;
+              renderProperties.options['hms_external_id'] = fieldSettings.premium_content.id;
+
+              renderProperties.onPurchaseFinished = function() {
+                window.hmsAccess && window.hmsAccess.update();
+              }
             }
 
             // Configure digtap widget for each product.
-            window._digtapq.push(['render', {
-              widget: widgetType,
-              selector: '#' + fieldDomId + '-' + productIdIndex,
-              options: options
-            }]);
+            window._digtapq.push(['render', renderProperties]);
 
           });
         });
