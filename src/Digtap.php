@@ -17,7 +17,8 @@ class Digtap {
   private $logger;
   private $currentUser;
 
-  const PRICE_CATEGORY_PRODUCT_TYPE_ID = 15;
+  const PURCHASE_PRODUCT_TYPE_ID = 15;
+  const ENTITLEMENT_PRODUCT_TYPE_ID = 17;
   const PRICE_CATEGORY_API_PATH = '/home/de/api/v1/products';
   const DIGTAP_WIDGET_FRONTEND_JS_PATH = '/bundles/digtapecom/widgets/frontend/stage/digtap-widget-frontend.min.js';
   const DIGTAP_WIDGET_BACKEND_JS_PATH = '/bundles/digtapecom/widgets/backend/stage/digtap-widget-backend.min.js';
@@ -102,7 +103,10 @@ class Digtap {
           case 'price_category':
             return $bestseller_url
             . self::PRICE_CATEGORY_API_PATH . '?'
-            . http_build_query(['filter' => ['product_type_id' => self::PRICE_CATEGORY_PRODUCT_TYPE_ID]]);
+            . http_build_query(['filter' => ['product_type_id' => [
+              self::PURCHASE_PRODUCT_TYPE_ID,
+              self::ENTITLEMENT_PRODUCT_TYPE_ID
+            ]]]);
 
           case 'digtap_frontend_widget':
             return $bestseller_url . self::DIGTAP_WIDGET_FRONTEND_JS_PATH;
