@@ -15,7 +15,7 @@ hms_commerce.settings:
       type: string
     newsletter_client_id:
       label: 'Newsletter client ID'
-      type: integer
+      type: string
     newsletter_origin:
       label: 'Newsletter origin'
       type: string
