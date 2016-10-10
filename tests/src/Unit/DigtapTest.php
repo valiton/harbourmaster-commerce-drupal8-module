@@ -24,7 +24,6 @@ class DigtapTest extends DigtapTestBase {
    * Test getting a setting.
    */
   public function testGetSetting() {
-    $this->digtapMock->expects($this->never())->method('registerError');
     $this->assertEquals(\Drupal::service('hms_commerce.settings')->getSetting('bestseller_url'), $this->config['bestseller_url']);
   }
 
@@ -34,7 +33,6 @@ class DigtapTest extends DigtapTestBase {
   public function testGetSettingWhenSettingEmpty() {
     $this->config['bestseller_url'] = '';
     $this->mockDigtapService();
-    $this->digtapMock->expects($this->once())->method('registerError');
     $this->assertEmpty(\Drupal::service('hms_commerce.settings')->getSetting('bestseller_url', 'some error message'));
   }
 
@@ -42,7 +40,6 @@ class DigtapTest extends DigtapTestBase {
    * Test getting a setting when it does not exist.
    */
   public function testGetSettingWhenSettingNotExists() {
-    $this->digtapMock->expects($this->once())->method('registerError');
     $this->assertEmpty(\Drupal::service('hms_commerce.settings')->getSetting('non-existing setting', 'some error message'));
   }
 
@@ -52,7 +49,6 @@ class DigtapTest extends DigtapTestBase {
   public function testGetResourceUrl() {
     $this->config['bestseller_url'] = self::CURRENT_BESTSELLER_API_URL;
     $this->mockDigtapService();
-    $this->digtapMock->expects($this->never())->method('registerError');
     $this->assertNotEmpty(\Drupal::service('hms_commerce.settings')->getResourceUrl('bestseller'));
   }
 
@@ -62,7 +58,6 @@ class DigtapTest extends DigtapTestBase {
   public function testGetPriceCategories() {
     $this->config['bestseller_url'] = self::CURRENT_BESTSELLER_API_URL;
     $this->mockDigtapService();
-    $this->digtapMock->expects($this->never())->method('registerError');
     $this->assertNotEmpty(\Drupal::service('hms_commerce.settings')->getPriceCategories());
   }
 }

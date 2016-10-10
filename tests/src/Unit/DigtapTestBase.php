@@ -54,9 +54,17 @@ abstract class DigtapTestBase extends UnitTestCase {
    */
   protected function mockDigtapService() {
     $configFactory = $this->getConfigFactoryStub(['hms_commerce.settings' => $this->config]);
+
+    $logger = $this->getMockBuilder('\Drupal\hms_commerce\Logger')
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $current_user = $this->getMockBuilder('\Drupal\Core\Session\AccountProxyInterface')
+      ->disableOriginalConstructor()
+      ->getMock();
+
     $this->digtapMock = $this->getMockBuilder('\Drupal\hms_commerce\Digtap')
-      ->setConstructorArgs([$configFactory])
-      ->setMethods(['registerError'])
+      ->setConstructorArgs([$configFactory, $logger, $current_user])
       ->getMock();
     $this->container->set('hms_commerce.settings', $this->digtapMock);
     \Drupal::setContainer($this->container);
