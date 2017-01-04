@@ -4,7 +4,6 @@ namespace Drupal\hms_commerce;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\hms_commerce\Logger as HmsCommerceLogger;
 
 /**
  * Digtap drupal service class.
@@ -33,7 +32,7 @@ class Digtap {
    */
   function __construct(
     ConfigFactoryInterface $config_factory,
-    HmsCommerceLogger $logger,
+    Logger $logger,
     $current_user
   ) {
     $this->configFactory = $config_factory;

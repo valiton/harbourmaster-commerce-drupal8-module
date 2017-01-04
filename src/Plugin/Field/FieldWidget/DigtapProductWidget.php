@@ -5,6 +5,8 @@ namespace Drupal\hms_commerce\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use RecursiveIteratorIterator;
+use RecursiveArrayIterator;
 
 /**
  * @FieldWidget(
@@ -43,6 +45,7 @@ class DigtapProductWidget extends WidgetBase {
 
     $element['products']['product_store'] = [
       '#type' => 'hidden',
+//      '#type' => 'textfield',
 
       // Put all values into one single hidden field.
       '#default_value' => implode(',', $values),
@@ -87,18 +90,47 @@ class DigtapProductWidget extends WidgetBase {
    * validation on each value and save them separately.
    */
   public function extractFormValues(FieldItemListInterface $items, array $form, FormStateInterface $form_state) {
-    $field_value = $form_state->getValue($this->fieldDefinition->getName());
-    $values = explode(',', $field_value[0]['products']['product_store']);
-    foreach($values as $i => $value) {
-      $values[$i] = [
-        'value' => $value,
-        '_weight' => $i,
-      ];
-    }
-    // Let the widget massage the submitted values.
-    $values = $this->massageFormValues($values, $form, $form_state);
+    $field_values = $form_state->getValues();
 
-    // Assign the values and remove the empty ones.
-    $items->setValue($values);
+    // Using recursiveFind as field value might be inside the paragraph field.
+    $field_value = $this->recursiveFind($field_values, $this->fieldDefinition->getName());
+
+    if (isset($field_value[0]['products']['product_store'])) {
+      $values = explode(',', $field_value[0]['products']['product_store']);
+      foreach($values as $i => $value) {
+        $values[$i] = [
+          'value' => $value,
+          '_weight' => $i,
+        ];
+      }
+      // Let the widget massage the submitted values.
+      $values = $this->massageFormValues($values, $form, $form_state);
+
+      // Assign the values and remove the empty ones.
+      $items->setValue($values);
+    }
+    else {
+      //todo exception
+    }
+  }
+
+  /**
+   * Searches an array recursively for a key and returns the value of the first key found.
+   *
+   * @param array $array
+   * @param $needle
+   * @return mixed
+   */
+  private function recursiveFind(array $array, $needle) {
+    $recursive = new RecursiveIteratorIterator(
+      new RecursiveArrayIterator($array),
+      RecursiveIteratorIterator::SELF_FIRST);
+    foreach ($recursive as $key => $value) {
+      if ($key === $needle) {
+        return $value;
+      }
+    }
+    return FALSE;
   }
 }
+
