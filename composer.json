@@ -1,0 +1,24 @@
+{
+  "name": "valiton/harbourmaster-commerce",
+  "description": "Integrates Harbourmaster Commerce for Drupal. ",
+  "type": "drupal-module",
+  "authors": [
+    {
+      "name": "Patrick Durold (patrick_durold)",
+      "email": "patrick.durold@valiton.com",
+      "homepage": "https://www.drupal.org/u/patrick_durold"
+    },
+    {
+      "name": "Pawel Ginalski (gbyte.co)",
+      "email": "contact@gbyte.co",
+      "homepage": "https://www.drupal.org/u/gbyte.co"
+    },
+    {
+      "name": "Benedikt Weiner",
+      "email": "benedikt.weiner@valiton.com"
+    }
+  ],
+  "license": "GPL-2.0+",
+  "prefer-stable": true,
+  "require": { }
+}
