@@ -46,6 +46,7 @@ abstract class DigtapFormatterBase extends FormatterBase {
       if (!empty($bestseller_url = $settings->getResourceUrl('bestseller'))) {
         $elements['#attached']['library'][] = 'hms_commerce/products';
         $elements['#attached']['drupalSettings']['hms_commerce']['bestseller_url'] = $bestseller_url;
+        $elements['#attached']['drupalSettings']['hms_commerce']['bestseller_client'] = $settings->getSetting('bestseller_client');
         $elements['#attached']['drupalSettings']['hms_commerce']['formatter_settings'][$this->widgetType][$field_name] = [
           'field_dom_id' => $field_dom_id,
           'product_ids' => $product_ids,

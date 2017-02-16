@@ -11,10 +11,12 @@
     attach: function(context, settings) {
 
       // Globally configure digtap widgets.
-      var bestsellerUrl = settings.hms_commerce.bestseller_url;
       window._digtapq = window._digtapq || [];
       window._digtapq.push(['configure', {
-        api: bestsellerUrl,
+        bestseller: {
+          api: settings.hms_commerce.bestseller_url,
+          client: settings.hms_commerce.bestseller_client
+        },
         newsletter: settings.hms_commerce.newsletter,
         usermanager: {
           api: settings.hms_commerce.usermanager_url

@@ -57,6 +57,13 @@ class SettingsForm extends ConfigFormBase {
       '#description' => $this->t('Absolute URL to the Bestseller API without trailing slash.'),
     ];
 
+    $form['bestseller_client'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Bestseller client'),
+      '#default_value' => $this->settings->getSetting('bestseller_client'),
+      '#description' => $this->t(''),
+    ];
+
     $form['entitlement_group_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Entitlement group name'),
@@ -106,6 +113,7 @@ class SettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->settings->saveSetting('bestseller_url', $form_state->getValue('bestseller_url'));
+    $this->settings->saveSetting('bestseller_client', trim($form_state->getValue('bestseller_client')));
     $this->settings->saveSetting('entitlement_group_name', trim($form_state->getValue('entitlement_group_name')));
     $this->settings->saveSetting('shared_secret_key', trim($form_state->getValue('shared_secret_key')));
     $this->settings->saveSetting('premium_content_error', trim($form_state->getValue('premium_content_error')));
