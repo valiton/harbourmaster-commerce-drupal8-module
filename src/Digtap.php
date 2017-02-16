@@ -4,6 +4,7 @@ namespace Drupal\hms_commerce;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Session\AccountProxy;
 
 /**
  * Digtap drupal service class.
@@ -33,7 +34,7 @@ class Digtap {
   function __construct(
     ConfigFactoryInterface $config_factory,
     Logger $logger,
-    $current_user
+    AccountProxy $current_user
   ) {
     $this->configFactory = $config_factory;
     $this->config = $config_factory->get('hms_commerce.settings');

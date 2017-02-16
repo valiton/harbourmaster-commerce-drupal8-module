@@ -78,8 +78,10 @@ class PremiumContentManager {
 
   /**
    * PremiumContentManager constructor.
+   * @param \Drupal\hms_commerce\Digtap $digtap_config
+   * @param \Drupal\hms_commerce\Encrypter $encrypter
    */
-  function __construct($digtap_config, $encrypter) {
+  function __construct(Digtap $digtap_config, Encrypter $encrypter) {
     $this->digtapSettings = $digtap_config;
     $this->encrypter = $encrypter;
     $this->entitlementGroupName = $this->digtapSettings->getSetting('entitlement_group_name');

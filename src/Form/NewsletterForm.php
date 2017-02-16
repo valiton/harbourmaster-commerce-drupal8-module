@@ -5,6 +5,7 @@ namespace Drupal\hms_commerce\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\hms_commerce\Digtap;
 
 /**
  * Class NewsletterForm
@@ -18,7 +19,7 @@ class NewsletterForm extends ConfigFormBase {
    * SettingsForm constructor.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $settings
    */
-  public function __construct($settings) {
+  public function __construct(Digtap $settings) {
     $this->settings = $settings;
   }
 

@@ -3,7 +3,7 @@
 namespace Drupal\hms_commerce;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\Session\AccountProxy;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -53,7 +53,7 @@ class Logger {
    */
   public function __construct(
     LoggerInterface $logger,
-    AccountProxyInterface $current_user
+    AccountProxy $current_user
   ) {
     $this->logger = $logger;
     $this->currentUser = $current_user;

@@ -6,6 +6,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\UrlHelper;
+use Drupal\hms_commerce\Digtap;
 
 /**
  * Class SettingsForm
@@ -17,14 +18,15 @@ class SettingsForm extends ConfigFormBase {
 
   /**
    * SettingsForm constructor.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $settings
+   * @param \Drupal\hms_commerce\Digtap $settings
    */
-  public function __construct($settings) {
+  public function __construct(Digtap $settings) {
     $this->settings = $settings;
   }
 
   /**
-   * {@inheritdoc}
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   * @return static
    */
   public static function create(ContainerInterface $container) {
     return new static(
