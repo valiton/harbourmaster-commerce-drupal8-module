@@ -10,10 +10,12 @@
     attach: function(context, settings) {
 
       // Configure digtap widgets.
-      var bestsellerUrl = settings.hms_commerce.bestseller_url;
       window._digtapq = window._digtapq || [];
       window._digtapq.push(['configure', {
-        api: bestsellerUrl
+        bestseller: {
+          api: settings.hms_commerce.bestseller_url,
+          client: settings.hms_commerce.bestseller_client
+        }
       }]);
 
       // Gather settings applying to all field widgets on the page.
