@@ -208,9 +208,7 @@ class PremiumContentManager {
    * @return bool
    */
   private function encryptPremiumFields($build) {
-    $this->encrypter
-      ->setHmsContentId($this->hmsContentId)
-      ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'));
+
     foreach($this->premiumFields as $premium_field_name) {
       $build = $this->encryptField($premium_field_name, $build);
     }
@@ -231,6 +229,9 @@ class PremiumContentManager {
       $weight = $build[$field_name]['#weight'];
       $rendered_field = render($build[$field_name]);
       if (!empty($rendered_field)) {
+        $this->encrypter
+              ->setHmsContentId($this->hmsContentId)
+              ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'));
         $encrypted_content = $this->encrypter->encryptContent($rendered_field);
         $build[$field_name] = [
           '#markup' => $this->addShowToEntitledMarkup($encrypted_content),
