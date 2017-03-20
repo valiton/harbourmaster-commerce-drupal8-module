@@ -87,6 +87,13 @@ class SettingsForm extends ConfigFormBase {
       '#description' => $this->t('A generic error that will be shown to end users when something goes wrong.'),
     ];
 
+    $form['skip_entity_view_modes'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Skip entity view modes'),
+      '#default_value' => implode(' ', $this->settings->getSetting('skip_entity_view_modes')),
+      '#description' => $this->t('Space separated view mode IDs of content. Content shown in these view modes will not be encrypted.'),
+    ];
+
     $form['usermanager_configuration_link'] = [
       '#type' => 'markup',
       '#markup' => t("The usermanager API URL can be configured <a href='@url' target='_blank'>here</a>.", ['@url' => $GLOBALS['base_url'] . "/admin/config/people/harbourmaster#edit-usermanager-url"]),
@@ -119,6 +126,10 @@ class SettingsForm extends ConfigFormBase {
     $this->settings->saveSetting('entitlement_group_name', trim($form_state->getValue('entitlement_group_name')));
     $this->settings->saveSetting('shared_secret_key', trim($form_state->getValue('shared_secret_key')));
     $this->settings->saveSetting('premium_content_error', trim($form_state->getValue('premium_content_error')));
+
+    $view_modes = preg_replace("/ {2,}/", " ", $form_state->getValue('skip_entity_view_modes'));
+    $this->settings->saveSetting('skip_entity_view_modes', strlen($view_modes) > 1 ? explode(' ', $view_modes) : []);
+
     parent::submitForm($form, $form_state);
   }
 }

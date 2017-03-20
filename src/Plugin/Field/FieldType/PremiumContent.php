@@ -43,6 +43,7 @@ class PremiumContent extends DigtapFieldBase {
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     $element = [];
     $premium_field = $form_state->getFormObject()->getEntity();
+
     $bundle_fields = \Drupal::entityManager()
       ->getFieldDefinitions($premium_field->getTargetEntityTypeId(), $premium_field->getTargetBundle());
     $options = [];

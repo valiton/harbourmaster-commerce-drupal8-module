@@ -3,6 +3,7 @@ bestseller_client: ''
 entitlement_group_name: 'hasAbo'
 shared_secret_key: ''
 premium_content_error: 'We are sorry, we could not show the premium content.'
+skip_entity_view_modes: []
 newsletter_client_id: ''
 newsletter_origin: ''
 newsletter_groups: []

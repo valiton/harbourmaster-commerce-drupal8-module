@@ -13,6 +13,8 @@ class PremiumContentManager {
 
   private $entity;
 
+  private $display;
+
   private $digtapSettings;
 
   /**
@@ -74,6 +76,8 @@ class PremiumContentManager {
    */
   private $hmsContentId;
 
+  private $notAllowedViewModes;
+
   const ERROR_MESSAGE_WEIGHT = -500;
 
   /**
@@ -85,6 +89,7 @@ class PremiumContentManager {
     $this->digtapSettings = $digtap_config;
     $this->encrypter = $encrypter;
     $this->entitlementGroupName = $this->digtapSettings->getSetting('entitlement_group_name');
+    $this->notAllowedViewModes = $this->digtapSettings->getSetting('skip_entity_view_modes');
   }
 
   /**
@@ -94,9 +99,10 @@ class PremiumContentManager {
    *
    * @return $this
    */
-  public function setEntity($entity) {
+  public function setEntity($entity, $display) {
     $this->entity = $entity;
-    if ($this->setPremiumContentField()) {
+    $this->display = $display;
+    if ($this->viewModeAllowed() && $this->setPremiumContentField()) {
       $this->premiumCapable = TRUE;
       $this->setHmsContentId();
       $this->premium = !$this->premiumContentField->isEmpty();
@@ -106,11 +112,15 @@ class PremiumContentManager {
     return $this;
   }
 
+  private function viewModeAllowed() {
+    return !in_array($this->display->id(), $this->notAllowedViewModes);
+  }
+
   /**
    * @param $build
    */
   public function process(&$build) {
-    if ($this->entityIsPremium() || !empty($this->getTeaserFields())) {
+    if ($this->entityIsPremiumCapable() && ($this->entityIsPremium() || !empty($this->getTeaserFields()))) {
       $build['#attached']['library'][] = 'hms_commerce/premiumContent';
       $build = $this->addTeaserMarkup($build);
 
@@ -208,35 +218,20 @@ class PremiumContentManager {
    * @return bool
    */
   private function encryptPremiumFields($build) {
-
     foreach($this->premiumFields as $premium_field_name) {
-      $build = $this->encryptField($premium_field_name, $build);
-    }
-    return $build;
-  }
-
-  /**
-   * Encrypts a field.
-   *
-   * @param $field_name
-   * @param $build
-   *
-   * @return bool
-   *  FALSE if field not in $build array, otherwise TRUE.
-   */
-  private function encryptField($field_name, $build) {
-    if (isset($build[$field_name])) {
-      $weight = $build[$field_name]['#weight'];
-      $rendered_field = render($build[$field_name]);
-      if (!empty($rendered_field)) {
-        $this->encrypter
-              ->setHmsContentId($this->hmsContentId)
-              ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'));
-        $encrypted_content = $this->encrypter->encryptContent($rendered_field);
-        $build[$field_name] = [
-          '#markup' => $this->addShowToEntitledMarkup($encrypted_content),
-          '#weight' => $weight,
-        ];
+      if (isset($build[$premium_field_name])) {
+        $weight = $build[$premium_field_name]['#weight'];
+        $rendered_field = render($build[$premium_field_name]);
+        if (!empty($rendered_field)) {
+          $this->encrypter
+            ->setHmsContentId($this->hmsContentId)
+            ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'));
+          $encrypted_content = $this->encrypter->encryptContent($rendered_field);
+          $build[$premium_field_name] = [
+            '#markup' => $this->addShowToEntitledMarkup($encrypted_content),
+            '#weight' => $weight,
+          ];
+        }
       }
     }
     return $build;

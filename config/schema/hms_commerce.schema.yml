@@ -4,6 +4,9 @@ hms_commerce.settings:
     bestseller_url:
       label: 'Bestseller API URL'
       type: uri
+    bestseller_client:
+      label: 'Bestseller client'
+      type: string
     entitlement_group_name:
       label: 'Entitlement group name'
       type: string
@@ -13,6 +16,11 @@ hms_commerce.settings:
     premium_content_error:
       label: 'Premium content error message'
       type: string
+    skip_entity_view_modes:
+      label: 'Skip entity view modes'
+      type: sequence
+      sequence:
+        type: string
     newsletter_client_id:
       label: 'Newsletter client ID'
       type: string
@@ -31,8 +39,6 @@ hms_commerce.settings:
           name:
             label: 'Name'
             type: string
-      sequence:
-        type: string
     show_contact_permission:
       label: 'Show contact permission'
       type: boolean
@@ -45,12 +51,12 @@ field.field_settings.premium_content:
   label: 'Premium content field settings.'
   mapping:
     premium_fields:
-      type: sequence
       label: 'Premium fields'
+      type: sequence
       sequence:
         type: string
     teaser_fields:
-      type: sequence
       label: 'Teaser fields'
+      type: sequence
       sequence:
         type: string
