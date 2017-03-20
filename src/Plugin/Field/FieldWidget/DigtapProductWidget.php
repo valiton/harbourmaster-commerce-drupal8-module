@@ -62,10 +62,11 @@ class DigtapProductWidget extends WidgetBase {
     ];
 
     // Attach JS and its settings to this field widget.
-    $bestseller_url = \Drupal::service('hms_commerce.settings')->getResourceUrl('bestseller');
-    if (!empty($bestseller_url)) {
+    $settings = \Drupal::service('hms_commerce.settings');
+    if (!empty($bestseller_url = $settings->getResourceUrl('bestseller'))) {
       $form['#attached']['library'][] = 'hms_commerce/digtapProductWidget';
       $form['#attached']['drupalSettings']['hms_commerce']['bestseller_url'] = $bestseller_url;
+      $form['#attached']['drupalSettings']['hms_commerce']['bestseller_client'] = $settings->getSetting('bestseller_client');
       $form['#attached']['drupalSettings']['hms_commerce']['digtap_product_widget_settings'][$field_name] = [
         'input_id' => $dom_input_id,
         'container_id' => $dom_container_id,
