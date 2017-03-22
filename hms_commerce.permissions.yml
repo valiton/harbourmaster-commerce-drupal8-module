@@ -2,3 +2,8 @@ administer hms_commerce settings:
   title: 'Administer Harbourmaster commerce settings'
   description: 'Set various Harbourmaster commerce settings.'
   restrict access: false
+
+skip premium content encryption:
+  title: 'Show unencrypted premium content'
+  description: 'Premium content will always show unencrypted.'
+  restrict access: false

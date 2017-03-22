@@ -183,4 +183,18 @@ class Digtap {
     }
     return $categories;
   }
+
+  /**
+   * @param bool $display_message
+   * @return bool
+   */
+  public function userHasSkipEncryptionPermission($display_message = FALSE) {
+    if ($this->currentUser->hasPermission('skip premium content encryption')) {
+      if ($display_message) {
+        drupal_set_message($this->t('You are viewing unencrypted premium content as per granted permissions.'));
+      }
+      return TRUE;
+    }
+    return FALSE;
+  }
 }

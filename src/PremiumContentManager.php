@@ -142,7 +142,9 @@ class PremiumContentManager {
    * @return bool
    */
   public function entityNeedsEncryption() {
-    return !$this->premiumContentField->isEmpty() && !empty($this->visiblePremiumFields);
+    return !$this->premiumContentField->isEmpty()
+    && !empty($this->visiblePremiumFields)
+    && !$this->digtapSettings->userHasSkipEncryptionPermission(TRUE);
   }
 
   /**
@@ -176,7 +178,7 @@ class PremiumContentManager {
   private function setVisibleFields($type) {
     foreach($this->premiumContentField->getSetting($type . '_fields') as $field_name => $setting) {
       if ($field_name === $setting && in_array($field_name, $this->visibleFields)) {
-        array_push($this->{'visible' . ucfirst($type) . 'Fields'}, $field_name);
+        $this->{'visible' . ucfirst($type) . 'Fields'}[] = $field_name;
       }
     }
   }
