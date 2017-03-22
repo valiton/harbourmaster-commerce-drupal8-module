@@ -16,11 +16,6 @@ hms_commerce.settings:
     premium_content_error:
       label: 'Premium content error message'
       type: string
-    skip_entity_view_modes:
-      label: 'Skip entity view modes'
-      type: sequence
-      sequence:
-        type: string
     newsletter_client_id:
       label: 'Newsletter client ID'
       type: string

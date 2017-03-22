@@ -3,6 +3,8 @@
 namespace Drupal\hms_commerce;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 
 /**
  * PremiumContentManager drupal service class.
@@ -11,8 +13,14 @@ class PremiumContentManager {
 
   use StringTranslationTrait;
 
+  /**
+   * @var \Drupal\Core\Entity\EntityInterface
+   */
   private $entity;
 
+  /**
+   * @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface
+   */
   private $display;
 
   private $digtapSettings;
@@ -25,32 +33,27 @@ class PremiumContentManager {
   private $encrypter;
 
   /**
-   * Entity fields that have been marked premium on the premium_content field
+   * All visible fields in the current view mode.
+   *
+   * @var array
+   */
+  private $visibleFields = [];
+
+  /**
+   * Visible entity fields that have been marked premium on the premium_content field
    * settings page.
    *
    * @var array
    */
-  private $premiumFields = [];
+  private $visiblePremiumFields = [];
 
   /**
-   * Entity fields that have been marked as teasers on the premium_content field
+   * Visible entity fields that have been marked as teasers on the premium_content field
    * settings page.
    *
    * @var array
    */
-  private $teaserFields = [];
-
-  /**
-   * @var bool
-   */
-  private $premiumCapable = FALSE;
-
-  /**
-   * Indicates if the entity processed includes premium content.
-   *
-   * @var bool
-   */
-  private $premium = FALSE;
+  private $visibleTeaserFields = [];
 
   /**
    * The premium_content field object defining whether and in which way an
@@ -76,8 +79,6 @@ class PremiumContentManager {
    */
   private $hmsContentId;
 
-  private $notAllowedViewModes;
-
   const ERROR_MESSAGE_WEIGHT = -500;
 
   /**
@@ -89,7 +90,6 @@ class PremiumContentManager {
     $this->digtapSettings = $digtap_config;
     $this->encrypter = $encrypter;
     $this->entitlementGroupName = $this->digtapSettings->getSetting('entitlement_group_name');
-    $this->notAllowedViewModes = $this->digtapSettings->getSetting('skip_entity_view_modes');
   }
 
   /**
@@ -99,73 +99,50 @@ class PremiumContentManager {
    *
    * @return $this
    */
-  public function setEntity($entity, $display) {
+  public function setEntity(EntityInterface $entity, EntityViewDisplayInterface $display) {
     $this->entity = $entity;
     $this->display = $display;
-    if ($this->viewModeAllowed() && $this->setPremiumContentField()) {
-      $this->premiumCapable = TRUE;
-      $this->setHmsContentId();
-      $this->premium = !$this->premiumContentField->isEmpty();
-      $this->setTeaserFields();
-      $this->setPremiumFields();
-    }
     return $this;
-  }
-
-  private function viewModeAllowed() {
-    return !in_array($this->display->id(), $this->notAllowedViewModes);
   }
 
   /**
    * @param $build
    */
   public function process(&$build) {
-    if ($this->entityIsPremiumCapable() && ($this->entityIsPremium() || !empty($this->getTeaserFields()))) {
-      $build['#attached']['library'][] = 'hms_commerce/premiumContent';
-      $build = $this->addTeaserMarkup($build);
 
-      if ($this->entityIsPremium() && !empty($this->getPremiumFields())) {
+    if ($this->setPremiumContentField()) {
+
+      $this->visibleFields = array_keys($this->display->getComponents());
+      $this->setVisibleFields('premium');
+      $this->setVisibleFields('teaser');
+
+      if ($this->entityNeedsEncryption()) {
+
+        $this->setHmsContentId();
+
+        $build['#attached']['library'][] = 'hms_commerce/premiumContent';
+        $build = $this->addTeaserMarkup($build);
         $build = $this->addPremiumContentErrorMessage($build);
         $build = $this->encryptPremiumFields($build);
         $build = $this->addPremiumContentFieldMarkup($build);
+      }
+
+      // If entity does not need encryption, remove teasers from render array.
+      else {
+        foreach ($this->visibleTeaserFields as $teaser_field_name) {
+          unset($build[$teaser_field_name]);
+        }
       }
     }
   }
 
   /**
-   * Checks if this entity includes premium content.
+   * Checks if this entity includes visible premium content.
    *
    * @return bool
    */
-  public function entityIsPremium() {
-    return $this->premium;
-  }
-
-  /**
-   * @return bool
-   */
-  public function entityIsPremiumCapable() {
-    return $this->premiumCapable;
-  }
-
-  /**
-   * Returns an array of this entity's premium fields as defined in the
-   * premium_content field's settings.
-   *
-   * @return array
-   */
-  public function getPremiumFields() {
-    return $this->premiumFields;
-  }
-
-  /**
-   * Returns an array of this entity's teaser fields as defined in the
-   * premium_content field's settings.
-   *
-   * @return array
-   */
-  public function getTeaserFields() {
-    return $this->teaserFields;
+  public function entityNeedsEncryption() {
+    return !$this->premiumContentField->isEmpty() && !empty($this->visiblePremiumFields);
   }
 
   /**
@@ -191,41 +168,36 @@ class PremiumContentManager {
   }
 
   /**
-   * Gathers all premium fields from this entity defined by the premium_content
+   * Gathers all visible premium fields from this entity defined by the premium_content
    * field.
+   *
+   * @param $type
    */
-  private function setPremiumFields() {
-    $this->premiumFields = array_filter(
-      $this->premiumContentField->getSetting('premium_fields'), function($i) {return !empty($i);}
-    );
+  private function setVisibleFields($type) {
+    foreach($this->premiumContentField->getSetting($type . '_fields') as $field_name => $setting) {
+      if ($field_name === $setting && in_array($field_name, $this->visibleFields)) {
+        array_push($this->{'visible' . ucfirst($type) . 'Fields'}, $field_name);
+      }
+    }
   }
 
   /**
-   * Gathers all teaser fields from this entity defined by the premium_content
-   * field.
-   */
-  private function setTeaserFields() {
-    $this->teaserFields = array_filter(
-      $this->premiumContentField->getSetting('teaser_fields'), function($i) {return !empty($i);}
-    );
-  }
-
-  /**
-   * Encrypts the premium bits of an entity's render array with an encrypter.
+   * Encrypts all visible premium bits of an entity's render array with an encrypter.
    * Should be called in hook_entity_view_alter.
    *
    * @param $build
    * @return bool
    */
   private function encryptPremiumFields($build) {
-    foreach($this->premiumFields as $premium_field_name) {
+    $this->encrypter
+      ->setHmsContentId($this->hmsContentId)
+      ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'));
+
+    foreach($this->visiblePremiumFields as $premium_field_name) {
       if (isset($build[$premium_field_name])) {
         $weight = $build[$premium_field_name]['#weight'];
         $rendered_field = render($build[$premium_field_name]);
         if (!empty($rendered_field)) {
-          $this->encrypter
-            ->setHmsContentId($this->hmsContentId)
-            ->setSecretKey($this->digtapSettings->getSetting('shared_secret_key'));
           $encrypted_content = $this->encrypter->encryptContent($rendered_field);
           $build[$premium_field_name] = [
             '#markup' => $this->addShowToEntitledMarkup($encrypted_content),
@@ -282,7 +254,7 @@ class PremiumContentManager {
    * @return array
    */
   private function addTeaserMarkup($build) {
-    foreach($this->teaserFields as $teaser_field_name) {
+    foreach($this->visibleTeaserFields as $teaser_field_name) {
       if (isset($build[$teaser_field_name])) {
         $weight = $build[$teaser_field_name]['#weight'];
         $rendered_field = render($build[$teaser_field_name]);
