@@ -52,7 +52,11 @@
               renderProperties.options['hms_external_id'] = fieldSettings.premium_content.id;
 
               renderProperties.onPurchaseFinished = function() {
-                window.hmsAccess && window.hmsAccess.update();
+
+                //todo only if infinty theme
+                document.location.reload();
+
+                // window.hmsAccess && window.hmsAccess.update();
               }
             }
 
