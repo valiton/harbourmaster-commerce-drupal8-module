@@ -53,10 +53,13 @@
 
               renderProperties.onPurchaseFinished = function() {
 
-                //todo only if infinty theme
-                document.location.reload();
+                if(Drupal.behaviors.burdaInfinite){
+                  console.log("we reload the page, workaround for infinite theme");
+                  document.location.reload();
+                } else {
+                  window.hmsAccess && window.hmsAccess.update();
+                }
 
-                // window.hmsAccess && window.hmsAccess.update();
               }
             }
 
